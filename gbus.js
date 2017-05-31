@@ -17,13 +17,13 @@
                     k[3] =document.querySelector("[id='234000016_67l']").textContent.replace(/\s/gi,'');
                     k[4] =document.querySelector("[id='200000115_48t']").textContent.replace(/\s/gi,'');   //5100 bus  time , before station num
                     k[5] =document.querySelector("[id='200000115_48l']").textContent.replace(/\s/gi,'');
-                    k[6] =document.querySelector("[id='234000001_134t']").textContent.replace(/\s/gi,'');   //5500-1 bus  time , before station num
-                    k[7] =document.querySelector("[id='234000001_134l']").textContent.replace(/\s/gi,'');
+                    k[6] =document.querySelector("[id='234000001_132t']").textContent.replace(/\s/gi,'');   //5500-1 bus  time , before station num
+                    k[7] =document.querySelector("[id='234000001_132l']").textContent.replace(/\s/gi,'');
                     return k;
                 });
                 fs.write('dataFile',buses);
 
-            }, 400);
+            }, 800);
         }
                    
 
@@ -46,8 +46,8 @@
                     return k2;
                 });
                 fs2.write('mdataFile',buses2);
-                phantom.exit();
-            }, 1500);
+                phantom.exit();         //DOM 안으로 넣어보자 file write
+            }, 1000);
         }
     
     });

@@ -5,7 +5,7 @@ page.viewportSize = { width: 1024, height: 683 };
 page.clipRect = {top: 450,
   left: 230,
   width: 730,
-  height: 550 };
+  height: 900 };
 //the rest of the code is the same as the previous example
 page.open('http://www.woojungwon.net/Ghostel/mall_main.php?viewform=B0001_foodboard_list&board_no=1&flag=1', function() {
   setTimeout(function(){
