@@ -24,6 +24,7 @@ exports.exWooJeongwon =function(){
      childProcess.execFileSync(binPath, childArgs);
 }
 
+
 //phantomjs exe with node , this will be part of main.js , parsing process
 
 
