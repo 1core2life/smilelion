@@ -25,7 +25,6 @@ module.exports = function(app)
     });
     
     
-    
 	
 	// 메시지
 	app.post('/message', function(req, res){
@@ -34,13 +33,13 @@ module.exports = function(app)
    	   
 
     if(req.body.content ==  "서울 캠퍼스"){
-        sendingData +="원하는 메뉴를 선택하라!";
+        sendingData +="원하는 메뉴를 선택하라!\n";
         sendButtonSeoul(res,imoticon.addImoticonSweat(sendingData));
         
     }
     
     else if(req.body.content ==  "국제 캠퍼스"){
-        sendingData +="원하는 메뉴를 선택하라!";
+        sendingData +="원하는 메뉴를 선택하라!\n";
         sendButtonGlobal(res,imoticon.addImoticonSweat(sendingData));
         
     }
@@ -48,7 +47,7 @@ module.exports = function(app)
     else if(req.body.content ==  "사용 방법"){
     
         sendingData +="명령어 목록을 가져왔다!\n" ;
-        sendingData +="-버스 확인(설/국)\n-책 <책이름>\n-날씨(설/국)\n-학식(설/국)\n-골라줘\n-맛집 추천(설/국)\n-기타 정보\n-웃어\n이렇게나 많이 할 수 있음!" ;
+        sendingData +="-버스 확인(설/국)\n-책 <책이름>\n-날씨(설/국)\n-학식(설/국)\n-골라줘\n-맛집 추천(설/국)\n-기타 정보\n-웃어\n" ;
         
         sendButtonDefault(res,imoticon.addImoticonSmile(sendingData));
     }
@@ -56,19 +55,19 @@ module.exports = function(app)
     else if(req.body.content ==  "문의 하기"){
     
         sendingData +="< 문의 메일 > whitezonen1@khu.ac.kr\n" ;
-        sendingData +="경희대 컴공과 재학생 제작 \n컴공 동아리는 D.com" ;
+        sendingData +="경희대 컴공과 재학생 제작 \nD.com\n" ;
         
         sendButtonDefault(res,imoticon.addImoticonSmile(sendingData));
     }
     
     else if(req.body.content ==  "버스 확인(설)"){        //------------------------------------------------------------------------해야대
     
-        
+        busChecker(res,0);
     }
     
     else if(req.body.content ==  "버스 확인(국)"){
         
-        busForeign(res);
+        busChecker(res,1);
     }
     
     else if(req.body.content.indexOf("책") != -1){
@@ -78,7 +77,7 @@ module.exports = function(app)
     
     else if(req.body.content ==  "도서 검색"){
     
-        sendingData +="[책 '책 제목']을 입력하라!\n ex) 책 어린왕자" ;
+        sendingData +="[책 '책 제목']을 입력하라!\n ex) 책 어린왕자\n" ;
         sendtoUser(res,imoticon.addImoticonDefault(sendingData));
     }
     
@@ -104,24 +103,26 @@ module.exports = function(app)
     }
     
     else if(req.body.content ==  "골라줘"){
-        var menu = new Array('한식','면빵','중식','양식일식','카페','분식포차','고기','치킨');
-        sendingData ="웃는 사자의 추천 메뉴는 !\n"+menu[Math.floor(Math.random() * (7))]+"\nthanks for lionbee manual!" ;
+        var menu = new Array('한식','면빵','중식','양식일식','카페','분식','고기','치킨');
+        sendingData ="웃는 사자의 추천 메뉴는 !\n"+menu[Math.floor(Math.random() * (7))]+"\n" ;
         sendButtonDefault(res,imoticon.addImoticonSmile(sendingData));
     
     }
     
     else if(req.body.content ==  "맛집 추천(설)"){        //------------------------------------------------------------------------해야대
     
-       
+       sendingData ="아직 데이터가 읍다! ㅠㅠ\n" ;
+        sendButtonDefault(res,imoticon.addImoticonSmile(sendingData));
     }
     else if(req.body.content ==  "맛집 추천(국)"){        //------------------------------------------------------------------------해야대
     
-        
+        sendingData ="아직 데이터가 읍다! ㅠㅠ\n" ;
+        sendButtonDefault(res,imoticon.addImoticonSmile(sendingData));
     }
     
     else if(req.body.content ==  "기타 정보"){
     
-        sendingData +="-설캠 지도 / 국캠 지도\n-설국 버스 / 셔틀 버스" ;
+        sendingData +="-설캠 지도 / 국캠 지도\n-설국 버스 / 셔틀 버스\n" ;
         sendButtonEtc(res,imoticon.addImoticonDefault(sendingData));
     }
     
@@ -134,14 +135,14 @@ module.exports = function(app)
     //기타 정보
     
     else if(req.body.content == "설국 버스"){
-        sendingData ="국캠 출발 !!(사색/생대/체대)\n07:20\n07:30\n09:15\n12:00\n12:10\n15:00\n설캠 출발 !!(중도 건너)\n10:00\n12:00\n13:30\n16:00\n17:50\n18:00\n요금 단돈 1500원!" ;
+        sendingData ="국캠 출발 !!(사색/생대/체대)\n07:20\n07:30\n09:15\n12:00\n12:10\n15:00\n설캠 출발 !!(중도 건너)\n10:00\n12:00\n13:30\n16:00\n17:50\n18:00\n요금 단돈 1500원!\n" ;
         sendButtonDefault(res,imoticon.addImoticonSweat(sendingData));
     }
     
     else if(req.body.content =="셔틀 버스"){
         sendingData ="[국캠-영통역]\n 국캠 출발 !!\n 08:20\n 09:50\n 11:20\n 12:50\n 14:20\n 15:50\n 영통역 출발 !!(3번 출구)\n 08:30\n 10:00\n 11:30\n 13:00\n 14:30\n 16:00\n\n[통학버스등교]\n수원역 출발 !!(세평지하차도위)\n 08:15\n 08:30\n 09:30\n 10:00"+
                            "\n부평역 출발 !!(우체국 맞은편)\n 06:50\n주안역 출발 !!(사랑병원 건너)\n 06:50\n송내사거리 출발 !!\n 07:00(송내사거리 발)\n 07:05(부평역 발)\n 07:15(주안역 발)"+
-                           "\n\n[통학버스하교]\n수원행 출발 !!\n 18:00\n 19:00\n 21:00\n요금 단돈 700원!\n인천행 출발(송내-부평-주안 경유) !!\n 18:00\n 19:00\n 20:00\n요금 단돈 2000원!" ;
+                           "\n\n[통학버스하교]\n수원행 출발 !!\n 18:00\n 19:00\n 21:00\n요금 단돈 700원!\n인천행 출발(송내-부평-주안 경유) !!\n 18:00\n 19:00\n 20:00\n요금 단돈 2000원!\n" ;
         sendButtonDefault(res,imoticon.addImoticonSweat(sendingData));
     }
     
@@ -163,14 +164,19 @@ module.exports = function(app)
     
     else if(req.body.content ==  "웃어"){
     
-        sendingData ="ㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠ";
+        sendingData ="ㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠ\n";
         sendtoUser(res,imoticon.addImoticonCry(sendingData));
     
     }
     
+    else if(req.body.content == "뒤로 가기"){
+        sendingData ="뭐가 더 궁금하지?\n"
+        sendwithInit(res,imoticon.addImoticonSmile(sendingData));
+    }
+    
     else
     {
-        sendingData ="무슨 말인지 잘 모르겠다 ...\n[사용 방법]를 확인해라!" ;
+        sendingData ="무슨 말인지 잘 모르겠다 ...\n[사용 방법]를 확인해라!\n" ;
         sendButtonDefault(res,imoticon.addImoticonCry(sendingData));
     }
    	  
@@ -257,7 +263,8 @@ module.exports = function(app)
                   "날씨(설)",
                   "학식(설)",
                   "맛집 추천(설)",
-                  "기타 정보"
+                  "기타 정보",
+                  "뒤로 가기"
                   
                 ]
               }
@@ -278,7 +285,8 @@ module.exports = function(app)
                   "날씨(국)",
                   "학식(국)",
                   "맛집 추천(국)",
-                  "기타 정보"
+                  "기타 정보",
+                  "뒤로 가기"
                   
                 ]
               }
@@ -338,7 +346,24 @@ module.exports = function(app)
               }
             });
   	     res.end();
-     }    
+     }
+     
+     function sendwithInit(res,sendingText){
+       res.send({
+              "message": {
+                "text": sendingText
+             },
+              "keyboard": {
+                 "type": "buttons",
+                "buttons": ["서울 캠퍼스",
+                "국제 캠퍼스",
+                "사용 방법", 
+                "문의 하기"]
+               
+              }
+            });
+  	     res.end();
+     }
      
      function sendtoUser(res,sendingData){
        res.send({
@@ -370,197 +395,224 @@ module.exports = function(app)
             var $ = cheerio.load(body);
             var array = {"title": [], "author": [], "status": [], "location": [], "code": []};
             var index = 0;
-            $(".body").each(function () {
-                var st =  $(this).text().replace(/(\s*)/gi, "").split('/');
-                array["title"][index] = st[0];
-
-
-                var pos = st[1].indexOf("대출");
-                var position = new Array();
-                while(pos > -1){
-                    position.push(pos);
-                    pos =  st[1].indexOf("대출", pos + 1);
-                }
-                
-                 array["location"][index] = new Array(position.length);
-                 array["code"][index] = new Array(position.length);
-                 array["status"][index] = new Array(position.length);
-                
-                    if(st[1].indexOf("서울C") > -1){
-                        array["location"][index][0] = "서울 도서관";
-                        array["author"][index] =  st[1].substr(0 , st[1].indexOf("서울C")-1);
-                    }
-                    else if(st[1].indexOf("국제C") > -1){
-                        array["location"][index][0] = "국제 도서관";
-                        array["author"][index] =  st[1].substr(0 , st[1].indexOf("국제C")-1);
-                    }
-                    else if(st[1].indexOf("평화복지") > -1){
-                        array["location"][index][0] = "평화복지 대학원";
-                        array["author"][index] =  st[1].substr(0 , st[1].indexOf("평화복지")-1);
-                    }
-                    else if(st[1].indexOf("의학도서관") > -1 && st[1].indexOf("한의학도서관") <= -1){
-                        array["location"][index][0] = "의학도서관";
-                        array["author"][index] =  st[1].substr(0 , st[1].indexOf("의학도서관")-1);
-                    }
-                    else if(st[1].indexOf("한의학도서관") > -1){
-                        array["location"][index][0] = "한의학도서관";
-                        array["author"][index] =  st[1].substr(0 , st[1].indexOf("한의학도서관")-1);
-                    }
-                    else if(st[1].indexOf("법학도서관") > -1){
-                        array["location"][index][0] = "법학도서관";
-                        array["author"][index] =  st[1].substr(0 , st[1].indexOf("법학도서관")-1);
-                    }
-                    else if(st[1].indexOf("의료원도서실") > -1){
-                        array["location"][index][0] = "의료원도서실";
-                        array["author"][index] =  st[1].substr(0 , st[1].indexOf("의료원도서실")-1);
-                    }
-                    else if(st[1].indexOf("음악자료실") > -1){
-                        array["location"][index][0] = "음악자료실";
-                        array["author"][index] =  st[1].substr(0 , st[1].indexOf("음악자료실")-1);
-                    }
-                    else if(st[1].indexOf("공학도서관") > -1){
-                        array["location"][index][0] = "공학도서관";
-                        array["author"][index] =  st[1].substr(0 , st[1].indexOf("공학도서관")-1);
-                    }
-                    else{
-                        array["location"][index][0] = "후마니타스 도서관";
-                        array["author"][index] =  st[1].substr(0 , st[1].indexOf("후마니타스 도서관")-1);
-                    }
-                    
-                    
+            try {
+                $(".body").each(function () {
+                    var st =  $(this).text().replace(/(\s*)/gi, "").split('/');
+                    array["title"][index] = st[0];
     
-                    if(st[1].indexOf("대출가능") >- 1){
-                        array["status"][index][0] = "대출 가능";
-                        array["code"][index][0] =  st[1].substring( st[1].indexOf("[") , st[1].indexOf("]")+1 );
-                    }
-                    else{
-                        array["status"][index][0] = "대출 불가";
-                        array["code"][index][0] =  st[1].substring( st[1].indexOf("[") , st[1].indexOf("]")+1 );
+                    var pos = st[1].indexOf("대출");
+                    var position = new Array();
+                    while(pos > -1){
+                        position.push(pos);
+                        pos =  st[1].indexOf("대출", pos + 1);
                     }
                     
+                     array["location"][index] = new Array(position.length);
+                     array["code"][index] = new Array(position.length);
+                     array["status"][index] = new Array(position.length);
                     
-                sendingData += (index+1)+"\n";
-                sendingData += "이름-----------------\n"+array["title"][index]+"\n";
-                sendingData += "저자-----------------\n"+array["author"][index]+"\n";
-                sendingData += "위치-----------------\n"+array["location"][index][0]+"\n";
-                sendingData += "상태-----------------\n"+array["status"][index][0]+"\n";
-                sendingData += "코드-----------------\n"+array["code"][index][0]+"\n";
-                
-                if(position.length > 1){
-                    for(var k=1; k<position.length ; k++){
-                        
-                        var tempSt = st[1].substring( position[0]+2, st[1].length);
-
-                        if(tempSt.indexOf("서울C") > -1){
-                            array["location"][index][k] = "서울 도서관";
+                        if(st[1].indexOf("서울C") > -1){
+                            array["location"][index][0] = "서울 도서관";
+                            array["author"][index] =  st[1].substr(0 , st[1].indexOf("서울C")-1);
                         }
-                        else if(tempSt.indexOf("국제C") > -1){
-                            array["location"][index][k] = "국제 도서관";
+                        else if(st[1].indexOf("국제C") > -1){
+                            array["location"][index][0] = "국제 도서관";
+                            array["author"][index] =  st[1].substr(0 , st[1].indexOf("국제C")-1);
                         }
-                        else if(tempSt.indexOf("평화복지") > -1){
-                            array["location"][index][k] = "평화복지 대학원";
+                        else if(st[1].indexOf("평화복지") > -1){
+                            array["location"][index][0] = "평화복지 대학원";
+                            array["author"][index] =  st[1].substr(0 , st[1].indexOf("평화복지")-1);
                         }
-                        else if(tempSt.indexOf("의학도서관") > -1 && tempSt.indexOf("한의학도서관") <= -1){
-                            array["location"][index][k] = "의학도서관";
+                        else if(st[1].indexOf("의학도서관") > -1 && st[1].indexOf("한의학도서관") <= -1){
+                            array["location"][index][0] = "의학도서관";
+                            array["author"][index] =  st[1].substr(0 , st[1].indexOf("의학도서관")-1);
                         }
-                        else if(tempSt.indexOf("한의학도서관") > -1){
-                            array["location"][index][k] = "한의학도서관";
+                        else if(st[1].indexOf("한의학도서관") > -1){
+                            array["location"][index][0] = "한의학도서관";
+                            array["author"][index] =  st[1].substr(0 , st[1].indexOf("한의학도서관")-1);
                         }
-                        else if(tempSt.indexOf("법학도서관") > -1){
-                            array["location"][index][k] = "법학도서관";
+                        else if(st[1].indexOf("법학도서관") > -1){
+                            array["location"][index][0] = "법학도서관";
+                            array["author"][index] =  st[1].substr(0 , st[1].indexOf("법학도서관")-1);
                         }
-                        else if(tempSt.indexOf("의료원도서실") > -1){
-                            array["location"][index][k] = "의료원도서실";
+                        else if(st[1].indexOf("의료원도서실") > -1){
+                            array["location"][index][0] = "의료원도서실";
+                            array["author"][index] =  st[1].substr(0 , st[1].indexOf("의료원도서실")-1);
                         }
-                        else if(tempSt.indexOf("음악자료실") > -1){
-                            array["location"][index][k] = "음악자료실";
+                        else if(st[1].indexOf("음악자료실") > -1){
+                            array["location"][index][0] = "음악자료실";
+                            array["author"][index] =  st[1].substr(0 , st[1].indexOf("음악자료실")-1);
                         }
-                        else if(tempSt.indexOf("공학도서관") > -1){
-                            array["location"][index][k] = "공학도서관";
+                        else if(st[1].indexOf("공학도서관") > -1){
+                            array["location"][index][0] = "공학도서관";
+                            array["author"][index] =  st[1].substr(0 , st[1].indexOf("공학도서관")-1);
                         }
                         else{
-                            array["location"][index][k] = "후마니타스 도서관";
+                            array["location"][index][0] = "후마니타스 도서관";
+                            array["author"][index] =  st[1].substr(0 , st[1].indexOf("후마니타스 도서관")-1);
                         }
                         
                         
         
-                        if(tempSt.indexOf("대출가능") >- 1){
-                            array["status"][index][k] = "대출 가능";
-                            array["code"][index][k] =  tempSt.substring(tempSt.indexOf("[") , tempSt.indexOf("]")+1 );
+                        if(st[1].indexOf("대출가능") >- 1){
+                            array["status"][index][0] = "대출 가능";
+                            array["code"][index][0] =  st[1].substring( st[1].indexOf("[") , st[1].indexOf("]")+1 );
                         }
                         else{
-                            array["status"][index][k] = "대출 불가";
-                            array["code"][index][k] = tempSt.substring( tempSt.indexOf("[") , tempSt.indexOf("]")+1 );
+                            array["status"][index][0] = "대출 불가";
+                            array["code"][index][0] =  st[1].substring( st[1].indexOf("[") , st[1].indexOf("]")+1 );
                         }
-                        sendingData += "\n위치-----------------\n"+array["location"][index][k]+"\n";
-                        sendingData += "상태-----------------\n"+array["status"][index][k]+"\n";
-                        sendingData += "코드-----------------\n"+array["code"][index][k]+"\n";
+                        
+                        
+                    sendingData += (index+1)+"\n";
+                    sendingData += "이름-----------------\n"+array["title"][index]+"\n";
+                    sendingData += "저자-----------------\n"+array["author"][index]+"\n";
+                    sendingData += "위치-----------------\n"+array["location"][index][0]+"\n";
+                    sendingData += "상태-----------------\n"+array["status"][index][0]+"\n";
+                    sendingData += "코드-----------------\n"+array["code"][index][0]+"\n";
+                    
+                    if(position.length > 1){
+                        for(var k=1; k<position.length ; k++){
+                            
+                            var tempSt = st[1].substring( position[0]+2, st[1].length);
+    
+                            if(tempSt.indexOf("서울C") > -1){
+                                array["location"][index][k] = "서울 도서관";
+                            }
+                            else if(tempSt.indexOf("국제C") > -1){
+                                array["location"][index][k] = "국제 도서관";
+                            }
+                            else if(tempSt.indexOf("평화복지") > -1){
+                                array["location"][index][k] = "평화복지 대학원";
+                            }
+                            else if(tempSt.indexOf("의학도서관") > -1 && tempSt.indexOf("한의학도서관") <= -1){
+                                array["location"][index][k] = "의학도서관";
+                            }
+                            else if(tempSt.indexOf("한의학도서관") > -1){
+                                array["location"][index][k] = "한의학도서관";
+                            }
+                            else if(tempSt.indexOf("법학도서관") > -1){
+                                array["location"][index][k] = "법학도서관";
+                            }
+                            else if(tempSt.indexOf("의료원도서실") > -1){
+                                array["location"][index][k] = "의료원도서실";
+                            }
+                            else if(tempSt.indexOf("음악자료실") > -1){
+                                array["location"][index][k] = "음악자료실";
+                            }
+                            else if(tempSt.indexOf("공학도서관") > -1){
+                                array["location"][index][k] = "공학도서관";
+                            }
+                            else{
+                                array["location"][index][k] = "후마니타스 도서관";
+                            }
+                            
+                            
+            
+                            if(tempSt.indexOf("대출가능") >- 1){
+                                array["status"][index][k] = "대출 가능";
+                                array["code"][index][k] =  tempSt.substring(tempSt.indexOf("[") , tempSt.indexOf("]")+1 );
+                            }
+                            else{
+                                array["status"][index][k] = "대출 불가";
+                                array["code"][index][k] = tempSt.substring( tempSt.indexOf("[") , tempSt.indexOf("]")+1 );
+                            }
+                            sendingData += "\n위치-----------------\n"+array["location"][index][k]+"\n";
+                            sendingData += "상태-----------------\n"+array["status"][index][k]+"\n";
+                            sendingData += "코드-----------------\n"+array["code"][index][k]+"\n";
+                        }
                     }
-                }
+                    
                 
+                    
+                    sendingData += "\n------------------------------------------------------\n\n";
+                   
+    
+                    index++;
+                    
+                    if(index > 3){
+                         sendingData += "책이 너무 많습니다. 상위 4개만 출력합니다!\n";
+                         return false;
+                    } 
+                });
+            }
+            catch(exception){
+                sendingData +="ERROR!\n문제를 해결할 수 있게 문의에 넣어 주세요!\n";
+            }
             
-                
-                sendingData += "\n------------------------------------------------------\n\n";
-               
-
-                index++;
-                
-                if(index > 3){
-                     sendingData += "책이 너무 많습니다. 상위 4개만 출력합니다!\n";
-                     return false;
-                } 
-            });
-            
-            
-            sendButtonDefault(res,imoticon.addImoticonSweat(sendingData));
+            if(index != 0)
+                sendButtonDefault(res,imoticon.addImoticonSweat(sendingData));
+            else{
+                sendingData += "책이 존재하지 않습니다!\n";
+                sendButtonDefault(res,imoticon.addImoticonSweat(sendingData));
+            }
         });
 
     }
     
-    function busForeign(res){
+    function busChecker(res,flag){
     
-         var request = require('request');
+        var request = require('request');
         var urlencode = require('urlencode');
-        var EncodedName = urlencode("외국어대학");
+
+        var SearchStationNum = "http://m.gbis.go.kr/search/getBusStationArrival.do?stationId=228000710&osInfoType=M";
         
-        var SearchStationNum = "http://m.gbis.go.kr/search/getStationPageList.do?tabMode=&serviceKey=1234567890&pageSize=15&pageNo=1&keyword="
-        +EncodedName+"&routeType=41%2C42%2C43%2C51%2C52%2C53&searchData="+EncodedName+"&osInfoType=M";
-    
-        sendingData += "외대 앞 버스 정보다!\n";
-        
+        sendingData = "외대 앞 버스 정보!\n";
+        if(flag == 0){
+            SearchStationNum = "http://m.gbis.go.kr/search/getBusStationArrival.do?stationId=105000185&osInfoType=M";
+            sendingData ="경희대입구 정류장 정보!\n";
+            
+        }
+
         request({
         url: SearchStationNum,
         method: 'GET'
         }, function(err, response, body) {
-            var totalInfo = JSON.parse(body);
-            var array = {"station": [], "stationId": []};
-            
-            for( var i in totalInfo["result"]["stationList"]){
-                array["station"][i] = totalInfo["result"]["stationList"][i]["stationName"];
-                array["stationId"][i] = totalInfo["result"]["stationList"][i]["stationId"];
+            var totalInfo2 = JSON.parse(body);
+            for( var i in totalInfo2["busStationArrivalInfo"]["arrivalList"]){
+                sendingData += totalInfo2["busStationArrivalInfo"]["arrivalList"][i]["routeName"];
+                sendingData += "번 버스>> ";
+                if(totalInfo2["busStationArrivalInfo"]["arrivalList"][i]["predictTime1"] == "")
+                    {
+                        sendingData += "는 차고지 대기 중 입니다.\n";
+                        continue;
+                    }
+                sendingData +=totalInfo2["busStationArrivalInfo"]["arrivalList"][i]["predictTime1"];
+                sendingData +="  <<분 후 도착\n";
             }
+            
+            if(flag == 1){
+                
+                SearchStationNum = "http://m.gbis.go.kr/search/getBusStationArrival.do?stationId=228000723&osInfoType=M";
 
-            SearchStationNum = "http://m.gbis.go.kr/search/getBusStationArrival.do?stationId="+array["stationId"][0]+"&osInfoType=M";
-            request({
-            url: SearchStationNum,
-            method: 'GET'
-            }, function(err, response, body) {
-                var totalInfo2 = JSON.parse(body);
-                for( var i in totalInfo2["busStationArrivalInfo"]["arrivalList"]){
-                    sendingData += totalInfo2["busStationArrivalInfo"]["arrivalList"][i]["routeName"];
-                    sendingData += "번 버스>> ";
-                    if(totalInfo2["busStationArrivalInfo"]["arrivalList"][i]["predictTime1"] == "")
-                        {
-                            sendingData += "는 차고지 대기 중 입니다.\n";
-                            continue;
+                request({
+                url: SearchStationNum,
+                method: 'GET'
+                }, function(err, response, body) {
+                    var totalInfo2 = JSON.parse(body);
+                    for( var i in totalInfo2["busStationArrivalInfo"]["arrivalList"]){
+                        if( totalInfo2["busStationArrivalInfo"]["arrivalList"][i]["routeName"] == "M5107"){
+                            sendingData += totalInfo2["busStationArrivalInfo"]["arrivalList"][i]["routeName"];
+                            sendingData += "번 버스>> ";
+                            if(totalInfo2["busStationArrivalInfo"]["arrivalList"][i]["predictTime1"] == "")
+                                {
+                                    sendingData += "는 차고지 대기 중 입니다.\n";
+                                    continue;
+                                }
+                            sendingData +=totalInfo2["busStationArrivalInfo"]["arrivalList"][i]["predictTime1"];
+                            sendingData +="  <<분 후 도착\n";
+                            sendingData +="* M버스의 경우, 경희대 정문 기준 시각"
                         }
-                    sendingData +=totalInfo2["busStationArrivalInfo"]["arrivalList"][i]["predictTime1"];
-                    sendingData +="  <<분 후 도착\n";
-                }
-              sendButtonGlobal(res,imoticon.addImoticonSweat(sendingData));
+                    }
+                    
+                    sendButtonGlobal(res,imoticon.addImoticonSweat(sendingData));
+                });
+            }
+            else
+                sendButtonSeoul(res,imoticon.addImoticonSweat(sendingData));
 
-            });
         });
+
     	
     }
     
@@ -746,25 +798,25 @@ module.exports = function(app)
             for(var k =0; k <totalInfo["stores"].length ; k ++){
                 if(pos == 1){
                     if( k == 0)
-                        sendingData +="제2 기숙사 ----------\n";
+                        sendingData +="●제2 기숙사 ----------\n";
                     else if( k == 1)
-                        sendingData +="\n우정원 ----------\n";  
+                        sendingData +="\n●우정원 ----------\n";  
                     else if( k == 2)
-                        sendingData +="\n학생회관 ----------\n";
+                        sendingData +="\n●학생회관 ----------\n";
                     else if( k == 3)
-                        sendingData +="\n공대 ----------\n";
+                        sendingData +="\n●공대 ----------\n";
                     else if( k == 4)
-                        sendingData +="\n학생회관_교직원 ----------\n";
+                        sendingData +="\n●학생회관_교직원 ----------\n";
                 }
                 else{
                     if( k == 0)
-                        sendingData +="청운관 ----------\n";
+                        sendingData +="●청운관 ----------\n";
                     else if( k == 1)
-                        sendingData +="\n푸른솔 ----------\n";  
+                        sendingData +="\n●푸른솔 ----------\n";  
                     else if( k == 2)
-                        sendingData +="\n청운관_교직원 ----------\n";
+                        sendingData +="\n●청운관_교직원 ----------\n";
                     else if( k == 3)
-                        sendingData +="\n푸른솔_교직원 ----------\n";
+                        sendingData +="\n●푸른솔_교직원 ----------\n";
                 }
                 for( var i = 0 ; i<  totalInfo["stores"][k]["menus"].length ; i++){
                     sendingData += haksik[k]["description"][i]+" /"  + haksik[k]["time"][i]  + "\n\n";
