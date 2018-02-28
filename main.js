@@ -1,6 +1,5 @@
 module.exports = function(app)
 {	
-    
     var sendingData ="";
     
     var imoticon = require('./imoticon.js');
@@ -30,7 +29,7 @@ module.exports = function(app)
 	app.post('/message', function(req, res){
 	    
 	sendingData ="";
-   	   
+   	
 
     if(req.body.content ==  "서울 캠퍼스"){
         sendingData +="원하는 메뉴를 선택하라!\n";
@@ -54,13 +53,14 @@ module.exports = function(app)
     
     else if(req.body.content ==  "문의 하기"){
     
+        sendingData +="이런 기능이 필요하다! 혹은 불편하다! 하시면 메일 주세요.\n" ;
         sendingData +="< 문의 메일 > whitezonen1@khu.ac.kr\n" ;
-        sendingData +="경희대 컴공과 재학생 제작 \nD.com\n" ;
+        sendingData +="경희대 컴공과 D.com 재학생 제작 \n" ;
         
         sendButtonDefault(res,imoticon.addImoticonSmile(sendingData));
     }
     
-    else if(req.body.content ==  "버스 확인(설)"){        //------------------------------------------------------------------------해야대
+    else if(req.body.content ==  "버스 확인(설)"){
     
         busChecker(res,0);
     }
@@ -111,13 +111,13 @@ module.exports = function(app)
     
     else if(req.body.content ==  "맛집 추천(설)"){        //------------------------------------------------------------------------해야대
     
-       sendingData ="아직 데이터가 읍다! ㅠㅠ\n" ;
-        sendButtonDefault(res,imoticon.addImoticonSmile(sendingData));
+       sendingData ="데이터 모으는 중 기달! ㅠㅠ\n" ;
+        sendButtonSeoul(res,imoticon.addImoticonSmile(sendingData));
     }
     else if(req.body.content ==  "맛집 추천(국)"){        //------------------------------------------------------------------------해야대
     
-        sendingData ="아직 데이터가 읍다! ㅠㅠ\n" ;
-        sendButtonDefault(res,imoticon.addImoticonSmile(sendingData));
+        sendingData ="데이터 모으는 중 기달다! ㅠㅠ\n" ;
+        sendButtonGlobal(res,imoticon.addImoticonSmile(sendingData));
     }
     
     else if(req.body.content ==  "기타 정보"){
@@ -135,14 +135,15 @@ module.exports = function(app)
     //기타 정보
     
     else if(req.body.content == "설국 버스"){
-        sendingData ="국캠 출발 !!(사색/생대/체대)\n07:20\n07:30\n09:15\n12:00\n12:10\n15:00\n설캠 출발 !!(중도 건너)\n10:00\n12:00\n13:30\n16:00\n17:50\n18:00\n요금 단돈 1500원!\n" ;
+        sendingData ="●국캠 출발 !!\n>사색의 광장 앞\n07:20\n07:30\n09:15\n12:00\n12:10\n15:00\n●설캠 출발 !!\n>온실 앞\n10:00\n12:00\n13:30\n16:00\n17:50\n18:00\n요금 단돈 1500원!\n\n※ 토요일, 일요일, 공휴일은 운행이 없습니다." ;
         sendButtonDefault(res,imoticon.addImoticonSweat(sendingData));
     }
     
     else if(req.body.content =="셔틀 버스"){
-        sendingData ="[국캠-영통역]\n 국캠 출발 !!\n 08:20\n 09:50\n 11:20\n 12:50\n 14:20\n 15:50\n 영통역 출발 !!(3번 출구)\n 08:30\n 10:00\n 11:30\n 13:00\n 14:30\n 16:00\n\n[통학버스등교]\n수원역 출발 !!(세평지하차도위)\n 08:15\n 08:30\n 09:30\n 10:00"+
-                           "\n부평역 출발 !!(우체국 맞은편)\n 06:50\n주안역 출발 !!(사랑병원 건너)\n 06:50\n송내사거리 출발 !!\n 07:00(송내사거리 발)\n 07:05(부평역 발)\n 07:15(주안역 발)"+
-                           "\n\n[통학버스하교]\n수원행 출발 !!\n 18:00\n 19:00\n 21:00\n요금 단돈 700원!\n인천행 출발(송내-부평-주안 경유) !!\n 18:00\n 19:00\n 20:00\n요금 단돈 2000원!\n" ;
+        sendingData ="●[국캠-영통역]\n>사색의 광장 앞\n 08:20\n 09:50\n 11:20\n 12:50\n 14:20\n 15:50\n>영통역 3번 출구\n 08:30\n 10:00\n 11:30\n 13:00\n 14:30\n 16:00\n\n500원\n\n●[통학버스등교]"+
+                            "\n>수원역\n 08:15\n 08:30\n 09:30\n 10:00"+
+                           "\n>부평역\n 06:50\n>주안역\n 06:50\n>송내사거리\n 07:00(송내사거리 발)\n 07:05(부평역 발)\n 07:15(주안역 발)"+
+                           "\n\n●[통학버스하교]\n>수원역\n 18:00\n 19:00\n 21:00\n요금 단돈 700원!\n>인천(송내-부평-주안 경유)\n 18:00\n 19:00\n 20:00\n\n요금 단돈 2000원!(등하교 동일)\n" ;
         sendButtonDefault(res,imoticon.addImoticonSweat(sendingData));
     }
     
@@ -152,14 +153,14 @@ module.exports = function(app)
                     "\n11. [지하]푸른솔 문화관/지하주차장 [지상]경희남중고 운동장\n12. 경희남중·고 13. 대운동장\n14. 네오관/사이버대 15. 교시탑\n16. 청운관 17. 호관대학\n18. 경희여중·고 19. 경희초"+
                     "\n20. 선동호 21. 미술대\n22. 국제교육원 23. 생활과대\n24. 신문방송국 25. 공관\n26. 본관(대학원) 27. 도서관\n28. 노천극장 29. 크라운관/음대\n30. 학관 31. 유치원/사이버대"+
                     "\n32. 무용관 33. 오비스홀/경영대\n34. 정경대 35. 문이과대\n36. 교수회관 37. 평화의전당\n38. 법과대학 39. 제2법학관\n40. 법학부속관 41. 후문\n42. 한의대/박물관 43. 삼의원";
-        sendwithPhotoMap(res, "http://smilelion-corelife.c9users.io/mapSeol",imoticon.addImoticonSmile(sendingData));
+        sendwithPhoto(res, "http://smilelion-corelife.c9users.io/mapSeol",imoticon.addImoticonSmile(sendingData),0);
     }
     
     else if(req.body.content =="국캠 지도"){
         sendingData ="1. 정문 2. 애지원\n3. 르네상스공원 4. 우정원\n5. 잔디구장/주차장 6. 공대\n7. 원자로센터 8. 실습공장동\n9. 체육대학관 10. 외국어대학관\n11. 경희공원 12. 멀관.글관"+
                     "\n13. 제2기숙사 14. 대운동장\n15. 도예관 16. 원예생명공학 온실\n17. 생명과학대학관 18. 실습농장동\n19. 실험연구동 20. 예술디자인대\n21. 국제.경영대학관 22. 학관\n23. 도서관 24. 사색의광장\n25. 주차장"+
                     " 26. 야구장\n27. 종합운동장 28. 노천극장\n29. 연못 30. 전정/응과대\n31. 국제대 32. 천문대" ;
-        sendwithPhotoMap(res, "http://smilelion-corelife.c9users.io/mapGl",imoticon.addImoticonSmile(sendingData));
+        sendwithPhoto(res, "http://smilelion-corelife.c9users.io/mapGl",imoticon.addImoticonSmile(sendingData),0);
     }
     
     else if(req.body.content ==  "웃어"){
@@ -189,65 +190,26 @@ module.exports = function(app)
 	// 친구추가
 	app.post('/friend', function(req, res){
 	    
-        var friendInfo = new Object();
-           
-        friendInfo.message = "success become friend !";
-
-        var jsonInfo = JSON.stringify(friendInfo);
-        console.log(jsonInfo);
-        
-        res.writeHead('200', {'content-Type':'text/html;charset=utf8'});
-        res.write(jsonInfo);
+	    res.json(200);
         res.end();
-
+        
     });
 	
 	// 친구삭제(차단)
 	app.delete('/friend/:user_key', function(req, res){
-        console.log(200);
-        
-		res.json(200);
+        res.json(200);
         res.end();
+        
     })
 	
 	// 채팅방 나가기
 	app.delete('/chat_room/:user_key', function(req, res){
-        console.log(200);
-        
-		res.json(200);
+        res.json(200);
         res.end();
-    })
+    });
   
-
-     app.get('/manualgl', function(req, res){
-     var fs = require("fs");
-     var img = fs.readFileSync('./gonggang/manualgl.jpg');
-     res.writeHead(200, {'Content-Type': 'image/jpg' });
-     res.end(img, 'binary');
-
-    });
-     app.get('/manualseol', function(req, res){
-     var fs = require("fs");
-     var img = fs.readFileSync('./gonggang/manualseol.jpg');
-     res.writeHead(200, {'Content-Type': 'image/jpg' });
-     res.end(img, 'binary');
-
-    });
     
-    app.get('/mapGl', function(req, res){
-     var fs = require("fs");
-     var img = fs.readFileSync('./public/mapGl.jpg');
-     res.writeHead(200, {'Content-Type': 'image/jpg' });
-     res.end(img, 'binary');
-
-    });
- 	app.get('/mapSeol', function(req, res){
-     var fs = require("fs");
-     var img = fs.readFileSync('./public/mapSeol.jpg');
-     res.writeHead(200, {'Content-Type': 'image/jpg' });
-     res.end(img, 'binary');
-
-    });
+   
     
     
      function sendButtonSeoul(res,sendingText){
@@ -326,28 +288,86 @@ module.exports = function(app)
   	    res.end();
      }  
     
-     function sendwithPhotoMap(res,sendingUrl,sendingText){
-       res.send({
-              "message": {
-                "text": sendingText,
-                "photo": {
-                  "url": sendingUrl,
-                  "width": 620,
-                  "height": 420
-                }
-             },
-              "keyboard": {
-                 "type": "buttons",
-                "buttons": ["서울 캠퍼스",
-                "국제 캠퍼스",
-                "사용 방법", 
-                "문의 하기"]
-               
-              }
-            });
-  	     res.end();
+     function sendwithPhoto(res,sendingUrl,sendingText,flag){
+         if(flag == 0){
+               res.send({
+                      "message": {
+                        "text": sendingText,
+                        "photo": {
+                          "url": sendingUrl,
+                          "width": 620,
+                          "height": 420
+                        }
+                     },
+                      "keyboard": {
+                         "type": "buttons",
+                        "buttons": ["서울 캠퍼스",
+                        "국제 캠퍼스",
+                        "사용 방법", 
+                        "문의 하기"]
+                       
+                      }
+                    });
+          	     res.end();
+             }
+             
+             //날씨, 국캠
+         else if(flag == 1){
+             res.send({
+                      "message": {
+                        "text": sendingText,
+                        "photo": {
+                          "url": sendingUrl,
+                          "width": 600,
+                          "height": 600
+                        }
+                     },
+                      "keyboard": {
+                        "type": "buttons",
+                        "buttons": [
+                          "버스 확인(국)",
+                          "도서 검색",
+                          "날씨(국)",
+                          "학식(국)",
+                          "맛집 추천(국)",
+                          "기타 정보",
+                          "뒤로 가기"
+                          
+                        ]
+                      }
+                    });
+          	     res.end();
+             }
+             
+             //날씨, 설캠
+         else if(flag == 2){
+             res.send({
+                      "message": {
+                        "text": sendingText,
+                        "photo": {
+                          "url": sendingUrl,
+                          "width": 600,
+                          "height": 600
+                        }
+                     },
+                       "keyboard": {
+                        "type": "buttons",
+                        "buttons": [
+                          "버스 확인(설)",
+                          "도서 검색",
+                          "날씨(설)",
+                          "학식(설)",
+                          "맛집 추천(설)",
+                          "기타 정보",
+                          "뒤로 가기"
+                          
+                        ]
+                      }
+                    });
+          	     res.end();
+             }
      }
-     
+         
      function sendwithInit(res,sendingText){
        res.send({
               "message": {
@@ -464,12 +484,12 @@ module.exports = function(app)
                         }
                         
                         
-                    sendingData += (index+1)+"\n";
-                    sendingData += "이름-----------------\n"+array["title"][index]+"\n";
-                    sendingData += "저자-----------------\n"+array["author"][index]+"\n";
-                    sendingData += "위치-----------------\n"+array["location"][index][0]+"\n";
-                    sendingData += "상태-----------------\n"+array["status"][index][0]+"\n";
-                    sendingData += "코드-----------------\n"+array["code"][index][0]+"\n";
+                    sendingData += "●"+"\n";
+                    sendingData += "▶이름\n"+array["title"][index]+"\n";
+                    sendingData += "▶저자\n"+array["author"][index]+"\n";
+                    sendingData += "▶위치\n"+array["location"][index][0]+"\n";
+                    sendingData += "▶상태\n"+array["status"][index][0]+"\n";
+                    sendingData += "▶코드\n"+array["code"][index][0]+"\n";
                     
                     if(position.length > 1){
                         for(var k=1; k<position.length ; k++){
@@ -531,7 +551,7 @@ module.exports = function(app)
                     index++;
                     
                     if(index > 3){
-                         sendingData += "책이 너무 많습니다. 상위 4개만 출력합니다!\n";
+                         sendingData += "책이 너무 많습니다.\n상위 4개만 출력합니다!\n";
                          return false;
                     } 
                 });
@@ -557,10 +577,10 @@ module.exports = function(app)
 
         var SearchStationNum = "http://m.gbis.go.kr/search/getBusStationArrival.do?stationId=228000710&osInfoType=M";
         
-        sendingData = "외대 앞 버스 정보!\n";
+        sendingData = "●외대앞 버스 정보!\n\n";
         if(flag == 0){
             SearchStationNum = "http://m.gbis.go.kr/search/getBusStationArrival.do?stationId=105000185&osInfoType=M";
-            sendingData ="경희대입구 정류장 정보!\n";
+            sendingData ="●경희대입구 정류장 정보!\n\n";
             
         }
 
@@ -570,15 +590,15 @@ module.exports = function(app)
         }, function(err, response, body) {
             var totalInfo2 = JSON.parse(body);
             for( var i in totalInfo2["busStationArrivalInfo"]["arrivalList"]){
-                sendingData += totalInfo2["busStationArrivalInfo"]["arrivalList"][i]["routeName"];
-                sendingData += "번 버스>> ";
+                sendingData += "▶" + totalInfo2["busStationArrivalInfo"]["arrivalList"][i]["routeName"];
+                sendingData += "번 버스 >  "; 
                 if(totalInfo2["busStationArrivalInfo"]["arrivalList"][i]["predictTime1"] == "")
                     {
-                        sendingData += "는 차고지 대기 중 입니다.\n";
+                        sendingData += "는 차고지 대기\n\n";
                         continue;
                     }
                 sendingData +=totalInfo2["busStationArrivalInfo"]["arrivalList"][i]["predictTime1"];
-                sendingData +="  <<분 후 도착\n";
+                sendingData +="  < 분 후 도착\n\n";
             }
             
             if(flag == 1){
@@ -592,15 +612,15 @@ module.exports = function(app)
                     var totalInfo2 = JSON.parse(body);
                     for( var i in totalInfo2["busStationArrivalInfo"]["arrivalList"]){
                         if( totalInfo2["busStationArrivalInfo"]["arrivalList"][i]["routeName"] == "M5107"){
-                            sendingData += totalInfo2["busStationArrivalInfo"]["arrivalList"][i]["routeName"];
-                            sendingData += "번 버스>> ";
+                            sendingData += "▶" + totalInfo2["busStationArrivalInfo"]["arrivalList"][i]["routeName"];
+                            sendingData += "번 버스 >  "; 
                             if(totalInfo2["busStationArrivalInfo"]["arrivalList"][i]["predictTime1"] == "")
                                 {
-                                    sendingData += "는 차고지 대기 중 입니다.\n";
+                                    sendingData += "는 차고지 대기\n\n";
                                     continue;
                                 }
                             sendingData +=totalInfo2["busStationArrivalInfo"]["arrivalList"][i]["predictTime1"];
-                            sendingData +="  <<분 후 도착\n";
+                            sendingData +="  < 분 후 도착\n\n";
                             sendingData +="* M버스의 경우, 경희대 정문 기준 시각"
                         }
                     }
@@ -702,7 +722,7 @@ module.exports = function(app)
             arr.push(temperature);
             arr.push(minTemp);
     
-            sendingData +="오늘의 날씨입니다.\n현재";
+            sendingData +="오늘의 날씨입니다.\n\n현재 ";
             
             if(pos == 0)
                 sendingData +="설캠 회기동 기온은 " + arr[4] + " ºC 이며\n";
@@ -713,20 +733,42 @@ module.exports = function(app)
        	    sendingData +="강수 확률은 " +arr[0]+" % 이며\n";
        	    sendingData +="습도는 " +arr[2]+" % 입니다.\n";
         
+            var imgUrl;
             if(arr[1] == 1){
+                imgUrl = "http://smilelion-corelife.c9users.io/rain"
                  sendingData +="또한 비가 내릴 예정입니다.\n";
             }
             else if(arr[1] == 2){
+                imgUrl = "http://smilelion-corelife.c9users.io/rainsnow"
                  sendingData +="또한 비와 눈이 내릴 예정입니다.\n";
             }
             else if(arr[1] == 3){
-                 sendingData +="또한 눈이 내릴 예정입니다. 아 츄\n";
+                imgUrl = "http://smilelion-corelife.c9users.io/snow"
+                 sendingData +="또한 눈이 내릴 예정입니다. 아 츕다..\n";
+            }
+            else{
+                if(arr[3] == 1){
+                    imgUrl = "http://smilelion-corelife.c9users.io/sun"
+                    sendingData +="오늘은 쨍쨍한 맑은 날로 예상 됩니다.\n";
+                }
+                else if(arr[3] == 2){
+                    imgUrl = "http://smilelion-corelife.c9users.io/alittlecloud"
+                    sendingData +="오늘은 조금 구름 낀 날씨가 예상 됩니다.\n";
+                }
+                else if(arr[3] == 3){
+                    imgUrl = "http://smilelion-corelife.c9users.io/lotsofcloud"
+                    sendingData +="오늘은 많ㅡ은 구름이 예상 됩니다.\n";
+                }
+                else if(arr[3] == 4){
+                    imgUrl = "http://smilelion-corelife.c9users.io/heurim"
+                    sendingData +="오늘은 쬐끔 흐린 날이 예상 됩니다.\n";
+                }
             }
         
             if(pos == 0)
-                sendButtonSeoul(res,imoticon.addImoticonDefault(sendingData));
+                sendwithPhoto(res,imgUrl,sendingData,2);
             else
-                sendButtonGlobal(res,imoticon.addImoticonDefault(sendingData));
+                sendwithPhoto(res,imgUrl,sendingData,1);
 
         });
 
@@ -761,7 +803,7 @@ module.exports = function(app)
         request({
         url: baburl,
         headers: {
-          'accesstoken': "!!"
+          'accesstoken': "~"
         },
         method: 'GET'
         }, function(err, response, body) {
@@ -819,21 +861,19 @@ module.exports = function(app)
                         sendingData +="\n●푸른솔_교직원 ----------\n";
                 }
                 for( var i = 0 ; i<  totalInfo["stores"][k]["menus"].length ; i++){
-                    sendingData += haksik[k]["description"][i]+" /"  + haksik[k]["time"][i]  + "\n\n";
+                    sendingData += haksik[k]["description"][i]+" ▶"  + haksik[k]["time"][i]  + "\n\n";
                 }
             
                 
             }
             
-            
-            sendButtonGlobal(res,imoticon.addImoticonDefault(sendingData));
-            
+            if(pos == 0)    //설
+                sendButtonSeoul(res,imoticon.addImoticonSweat(sendingData));
+            else
+                sendButtonGlobal(res,imoticon.addImoticonDefault(sendingData));
             
         });
      }
-    
-    
-    
     
     
 }

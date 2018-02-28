@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Python Flask Bucket List App</title>
+ 
+    
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+ 
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" rel="stylesheet">
+    
+    <link href="/static/css/posting.css" rel="stylesheet">
+    
+    <script src="https://code.jquery.com/jquery-2.2.1.js"></script>
+
+    <script type="text/javascript" src="http://jsgetip.appspot.com"></script>
+
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/earlyaccess/jejugothic.css">
+	  <style>
+      body {
+        font-family: 'Jeju Gothic', Sans-serif;
+      }
+    </style>
+  </head>
+ 
+  <body>
+ 
+    <div class="container">
+       <div id="navi"></div>
+ 
+      <div class="jumbotron"  style="margin-top:100px;">
+        <h1>선택 작성</h1>
+        
+        
+          <p><input type=file name=file >
+             <input name="nowTime" style="display: none;" value="zz"><br>
+		         <input type=submit value=Upload style="display: none;">
+          
+          <input type="name" name="subject" class="form-control" placeholder="제목" required autofocus>
+          <input type="name" name="location" class="form-control" placeholder="위치" required autofocus>
+          <textarea class="form-control" style="resize: none;" rows="10" name="content" placeholder="내용" required autofocus></textarea> 
+          
+          
+          <button id="posting" class="btn btn-lg btn-primary btn-block" style="margin-top:20px;" type="button submit">작성</button>
+      </div>
+ 
+       
+ 
+        <div>
+     		<hr class="mt-2">		
+     		<footer class="footer">
+                <p>&copy; Company 2018</p>
+            </footer>
+    
+     	</div>
+ 
+    </div>
+ 
+ <script>
+ 
+     var str="none";
+
+     $(function() {
+        $('#posting').click(function() {
+
+          //timeStamper();
+
+            $.ajax({
+                url: '/global/newPost',
+                data :{
+              		subject : $('input[name="subject"]').val(),
+              		content : document.getElementsByName("content")[0].value,
+              		userIp : ip(),
+              		location : $('input[name="location"]').val(),
+
+              	}, 
+                type: 'POST',
+                success: function(response) {
+                    alert("작성이 완료되었습니다.");
+                    window.location.replace("/global");
+                },
+                error: function(err){
+                    window.location.replace("/global");
+                }
+            });
+        });
+    });
+    
+    function fileChecker(){
+      var cnt = 0;
+      if ($("input[name*='file']").get(0).files.length != 0)
+        cnt++;
+      
+        
+      return cnt;//1 = file , 2 = file2 , 3 = file1~file2
+    }
+    
+    function nowTimeInput(){
+      
+      document.getElementsByName("nowTime")[0].value = str;
+    }
+    
+    function timeStamper(){
+      var date = new Date();
+      
+      var year = date.getFullYear();
+      var month = (date.getMonth()+1);
+      var day = date.getDate();
+      var hour = date.getHours();
+      var min = date.getMinutes();
+      var sec = date.getSeconds();
+      var mill = date.getMilliseconds();
+      
+      var cnt = fileChecker();
+      
+      if(cnt == 1){
+        var file = $("input[name*='file']")[0].files[0]
+        str = year +"-" +month +"-" +day +"-"+hour +"-"+min +"-"+sec +"-"+mill +"."+file.name.split(".")[1] ;
+      }
+      else{
+        str =  "none";
+      }
+
+    }
+ </script>
+ 
+  </body>
+</html>
+
+
+

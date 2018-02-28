@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+    <title>Python Flask Bucket List App</title>
+ 	
+ 
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+ 
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" rel="stylesheet">
+ 
+ 	<script src="https://code.jquery.com/jquery-2.2.1.js"></script>
+ 	
+ 	<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.js"></script>
+ 	
+ 	<script type="text/javascript" src="http://jsgetip.appspot.com"></script>
+ 	 
+ 	<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/earlyaccess/jejugothic.css">
+ 	
+  	<link href="/static/css/main2.css" rel="stylesheet">
+  	
+
+	<style>
+      body {
+        font-family: 'Jeju Gothic', Sans-serif;
+      }
+    </style>
+</head>
+ 
+	<body>
+		
+
+	 
+	    <div class="container" style="margin-top:100px;">
+	    	
+	    	
+	        <div class="jumbotron">
+	            <h1>[VS.wiki]</h1><h3><br>어쩌면 세상에서 가장 쓸모 있는 토론</h3>
+	            <p class="lead"></p>
+	            <p><a class="btn btn-lg btn-primary" href="/" role="button">구경하기</a>
+	            </p>
+	        </div>
+	 
+	        
+	 		
+
+
+	 		<div id="cardPos"></div>
+		
+	 		<button class="btn btn-primary" id="moreCards" style="margin-left : 47%; background-color: Transparent; "> <img class="btn-img  img-fluid w-20" src="/static/img/more.png"></button>
+	 		
+	 
+	 		<div class="row marketing" style="padding-top : 10%">
+	            <div class="col-lg-6">
+	                <h4>Bucket List</h4>
+	                <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
+	 
+	                <h4>Bucket List</h4>
+	                <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet fermentum.</p>
+	 
+	                <h4>Bucket List</h4>
+	                <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
+	            </div>
+	 
+	            <div class="col-lg-6">
+	                <h4>Bucket List</h4>
+	                <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
+	 
+	                <h4>Bucket List</h4>
+	                <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet fermentum.</p>
+	 
+	                <h4>Bucket List</h4>
+	                <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
+	            </div>
+	        </div>
+	 
+	 
+	 
+	 		<div class="company">
+		 		<hr class="mt-2">		
+		 		<footer class="footer">
+		            <p>&copy; Company 2018</p>
+		        </footer>
+	 
+	 		</div>
+	 	
+	    </div>
+	    
+	    
+	    
+	    <script type="text/javascript">
+
+			
+				var cardIndex = 0;
+				var postId = new Array();
+				
+				function getCards(){
+						$.ajax({
+							  url:'/global/card',
+							  context: document.body,
+							  success: function(response){
+
+							  	$.ajax({
+					                url: '/global/morePost',
+					                type: 'GET',
+					                success: function(res) {
+
+					                	res2 = jQuery.parseJSON(JSON.stringify(res));
+					                    $("#cardPos").append(response);
+					                    
+					                    var arrId = new Array();
+					                    arrId.push(cardIndex);
+					                    arrId.push(res2.id);
+					                    postId.push(arrId);
+									    
+									    var img = "/static/img/default-image.png";
+									    
+									    if(res2.img != "0")
+									    	$('#img').attr('src', img);
+									    else
+									    	$('#img').attr('src',img);
+									    	
+									    $('#vsTitle').attr('id','vsTitle-'+cardIndex);
+									    document.getElementById("vsTitle-"+(cardIndex)).innerHTML = res2.subject
+									    
+									    $('#vsContent').attr('id','vsContent-'+cardIndex);
+									    document.getElementById("vsContent-"+(cardIndex)).innerHTML = res2.content
+									    
+										$('#likePost').attr('id','likePost-'+cardIndex);
+
+										$('#likePoint').attr('id','likePoint-'+cardIndex);
+										document.getElementById("likePoint-"+(cardIndex)).innerHTML = res2.hit
+
+									    $('#img').attr('id','img-'+cardIndex);
+
+									    $('#pushComment').attr('id','pushComment-'+cardIndex);
+
+									    $('#push').attr('id','push-'+cardIndex);
+
+									    $('#comment').attr('id','comment-'+cardIndex);
+
+									    $('#commentup').attr('id','comment-'+cardIndex+"up");
+
+
+																    
+									    //newComm(res2["post"][0][0], cardIndex++);
+
+					                },
+					                error: function(error) {
+					                    alert(error);
+					                }
+					            });
+							  	
+							  }
+							});
+				}
+				
+				
+				function like(e) {
+					var tempId =0;
+					var pos = 0;
+					
+				  	for(var i=0 ; i < cardIndex ; i++){
+						if(postId[i][0] == e.id.split('-')[1])	
+							{
+								tempId = postId[i][1];
+								break;
+							}
+					}
+			  		if(e.id.split('-')[0] == "likePost2"){
+						pos = 2;
+					}
+					else{
+						pos = 1;
+					}
+			  	
+			      $.ajax({
+				  		data : { 
+				  			postId : tempId,
+				  			pos : pos,
+				  			ip : ip()
+			  		},
+			          url: '/like',
+			          type: 'POST',
+			          success: function(res) {
+			          	alert(res)
+			          },
+			          error: function(error) {
+			              alert("failed")
+			          }
+			      });
+				};
+				
+				
+				
+				function sliding(e){
+					$("#"+e.id.split('u')[0]).slideUp();
+					
+					if ($("#"+e.id.split('u')[0]).is(":hidden")) {
+						$("#"+e.id.split('u')[0]).show("slow"); 
+					} 
+					else { 
+						$("#"+e.id.split('u')[0]).slideUp(); 
+					}
+				}
+		      
+			      $(function() {
+					      $("#moreCards").click( function()
+					           {
+					           		getCards();
+					           }
+					      );
+					});
+					
+					function comm(e){
+						
+							var userId =""
+							var tempId =0;
+							var pos =0;
+							if(e.id.split('-')[0] == "push2"){
+								userId = "#pushComment2-"+e.id.split('-')[1]
+								pos = 2;
+							}
+							else{
+								userId = "#pushComment-"+e.id.split('-')[1]
+								pos = 1;
+							}
+							for(var i=0 ; i < cardIndex ; i++){
+
+								if(postId[i][0] == e.id.split('-')[1])	
+									{
+										tempId = postId[i][1];
+										break;
+									}
+							}
+							
+							if(  $(userId).val() =="" ){
+								alert("한글자 이상의 내용을 입력하세요.")
+								return;
+							}
+							$.ajax({
+							  		data : { comment : $(userId).val(),
+							  			name : ip(),
+							  			postId : tempId,
+							  			pos : pos
+							  		},
+					                url: '/newComment',
+					                type: 'POST',
+					                success: function() {
+					                	alert("ok")
+					                },
+					                error: function(error) {
+					                    alert($(userId).val());
+					                }
+					            });
+					}
+					
+					
+					function newComm(id,cardIdx){
+							$.ajax({
+							  url:'/comment',
+							  context: document.body,
+							  success: function(response){
+							  	
+							  	$.ajax({
+							  		data : { postId : id },
+					                url: '/moreComment',
+					                type: 'POST',
+					                success: function(res2) {
+					                	res2 = JSON.parse(res2);
+
+					                	for(var i =0 ; i< res2["comment"].length ;i++){
+					                		if(res2["comment"][i][5] == 2){
+					                    		$('#comment2-'+cardIdx).prepend(response);
+
+					                			document.getElementById("userName").innerHTML = res2["comment"][i][3];
+					                			$('#userName').attr('id','userName2-'+cardIdx);
+					                			
+					                			document.getElementById("content").innerHTML = res2["comment"][i][1];
+					                			$('#content').attr('id','content2-'+cardIdx);
+					                			
+					                			$('#like').attr('id','like2-'+cardIdx);
+					                			
+					                		}
+
+				                    		else{
+				                    			$('#comment-'+cardIdx).prepend(response);
+				                    			
+				                    			document.getElementById("userName").innerHTML = res2["comment"][i][3];
+					                			$('#userName').attr('id','userName-'+cardIdx);
+					                			
+					                			document.getElementById("content").innerHTML = res2["comment"][i][1];
+					                			$('#content').attr('id','content-'+cardIdx);
+					                			
+					                			$('#like').attr('id','like-'+cardIdx);
+				                    			
+				                    		}
+			                    			
+					                	}	
+					                },
+					                error: function(error) {
+					                    console.log(error);
+					                }
+					            });
+							  	
+							  }
+							});
+					}
+					
+					
+					getCards();
+		</script> 
+	    
+	</body>
+
+	
+	
+</html>
