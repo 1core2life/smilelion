@@ -82,27 +82,21 @@
     });
 */
 
-    /*	
-    sendingData="";
+   
 
     var request = require('request');
     var cheerio = require('cheerio');
     var iconv = require('iconv-lite');
     var urlencode = require('urlencode');
-    var EncodedName = urlencode("\'푸른솔1식당\'");
-    var today = new Date();
-        var dd = today.getDate();
-        var mm = today.getMonth()+1; //January is 0!
-        var yyyy = today.getFullYear();
-        if(dd<10) {
-            dd='0'+dd
-        } 
-        if(mm<10) {
-            mm='0'+mm
-        } 
-    today = yyyy+'년' + mm+'월'+dd +'일';
-
-    var SearchStationNum = "http://coop.khu.ac.kr/wp-admin/admin-ajax.php?action=get_wdtable&table_id=2&wdt_var1="+EncodedName+"&wdt_var2="+today+"&wdt_var3=weekday%28curdate%28%29%29";
+    var EncodedName = urlencode("\'청운관1식당\'");
+    var d = new Date();
+    var week = new Array(0,1,2,3,4,5,6);
+    
+    var today = d.getDay();
+    if(today >=5)
+        today = 4;
+        
+    var SearchStationNum = "http://coop.khu.ac.kr/wp-admin/admin-ajax.php?action=get_wdtable&table_id=3&wdt_var1=weekday%28curdate%28%29%29&wdt_var2="+today+"&wdt_var3="+EncodedName;
 
     request({
     url: SearchStationNum,
@@ -126,15 +120,3 @@
 
            
     });
-*/
-
-function re(a,b,callback){
-    callback(a+b);
-}
-
-var b;
-var a = re(1,5,function (result){
-            console.log(result);
-    })
-
-
