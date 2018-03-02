@@ -4,9 +4,9 @@ exports.addImoticonDefault = function (textData) {
      "         |\\                   |\\\n"+
      "         | & &&&&&&&  \\\n"+
      "         |/                      &\n"+
-     "        &     ●          ●  &\n"+
-     "        &              ▼      &\n"+
-     "       _ &           _ㅅ_    /\n"+
+     "        &     ●          ●   &\n"+
+     "        &          =    ▼ =   &\n"+
+     "       _ &            _ㅅ_    /\n"+
      "     (_ _) ㅡ ㅡ ㅡ ㅡㅡ(_ _)"
         return textData.concat(imoticon);
 }
@@ -18,7 +18,7 @@ exports.addImoticonCry = function (textData) {
      "         | & &&&&&&&  \\\n"+
      "         |/                      &\n"+
      "        &     ㅠ          ㅠ  &     우럿슴니다\n"+
-     "        &              ▼      &        8ㅅ8\n"+
+     "        &          =    ▼ =   &        8ㅅ8\n"+
      "       _ &           _ㅅ_    /\n"+
      "     (_ _) ㅡ ㅡ ㅡ ㅡㅡ(_ _)"
         return textData.concat(imoticon);
@@ -30,8 +30,8 @@ exports.addImoticonSweat = function (textData) {
      "         |\\                   |\\\n"+
      "         | & &&&&&&&  \\\n"+
      "         |/           u          &\n"+
-     "        &     ●          ●  &       헥헥..\n"+
-     "        &  u           ▼   u   &     늦어서\n"+
+     "        &     ●          ●   &       헥헥..\n"+
+     "        &          =    ▼ =  &     늦어서\n"+
      "       _ &   u       _ㅅ_    /      미안!\n"+
      "     (_ _) ㅡ ㅡ ㅡ ㅡㅡ(_ _)"
         return textData.concat(imoticon);
@@ -43,8 +43,8 @@ exports.addImoticonSmile = function (textData) {
      "         |\\                   |\\\n"+
      "         | & &&&&&&&  \\\n"+
      "         |/                      &\n"+
-     "        &     ㅋ          ㅋ  &\n"+   
-     "        &              ▼      &\n"+
+     "        &     ㅋ          ㅋ   &\n"+   
+     "        &          =    ▼ =   &\n"+
      "       _ &           _ㅅ_    /\n"+
      "     (_ _) ㅡ ㅡ ㅡ ㅡㅡ(_ _)"
         return textData.concat(imoticon);

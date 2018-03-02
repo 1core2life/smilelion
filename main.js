@@ -46,7 +46,7 @@ module.exports = function(app)
     else if(req.body.content ==  "사용 방법"){
     
         sendingData +="명령어 목록을 가져왔다!\n" ;
-        sendingData +="-버스 확인(설/국)\n-책 <책이름>\n-날씨(설/국)\n-학식(설/국)\n-골라줘\n-맛집 추천(설/국)\n-기타 정보\n-웃어\n" ;
+        sendingData +="-버스 확인(설/국)\n-지하철 확인\n-책 <책이름>\n-날씨(설/국)\n-학식(설/국)\n-골라줘\n-맛집 추천(설/국)\n-기타 정보\n-웃어\n" ;
         
         sendButtonDefault(res,imoticon.addImoticonSmile(sendingData));
     }
@@ -58,6 +58,15 @@ module.exports = function(app)
         sendingData +="경희대 컴공과 D.com 재학생 제작 \n" ;
         
         sendButtonDefault(res,imoticon.addImoticonSmile(sendingData));
+    }
+    
+    else if(req.body.content ==  "지하철 확인(설)"){
+    
+        subwayChecker(res,0);
+    }
+    else if(req.body.content ==  "지하철 확인(국)"){
+    
+        subwayChecker(res,1);
     }
     
     else if(req.body.content ==  "버스 확인(설)"){
@@ -93,13 +102,13 @@ module.exports = function(app)
     
     
     else if(req.body.content ==  "학식(설)"){
-    
-        haksik(res,0);   
+         
+        seolHaksik(res);
     }
     
     else if(req.body.content ==  "학식(국)"){
         
-        haksik(res,1);
+        globalHaksik(res);
     }
     
     else if(req.body.content ==  "골라줘"){
@@ -221,6 +230,7 @@ module.exports = function(app)
                 "type": "buttons",
                 "buttons": [
                   "버스 확인(설)",
+                  "지하철 확인(설)",
                   "도서 검색",
                   "날씨(설)",
                   "학식(설)",
@@ -243,6 +253,7 @@ module.exports = function(app)
                 "type": "buttons",
                 "buttons": [
                   "버스 확인(국)",
+                  "지하철 확인(국)",
                   "도서 검색",
                   "날씨(국)",
                   "학식(국)",
@@ -326,6 +337,7 @@ module.exports = function(app)
                         "type": "buttons",
                         "buttons": [
                           "버스 확인(국)",
+                          "지하철 확인(국)",
                           "도서 검색",
                           "날씨(국)",
                           "학식(국)",
@@ -354,6 +366,7 @@ module.exports = function(app)
                         "type": "buttons",
                         "buttons": [
                           "버스 확인(설)",
+                          "지하철 확인(설)",
                           "도서 검색",
                           "날씨(설)",
                           "학식(설)",
@@ -396,6 +409,66 @@ module.exports = function(app)
             });
   	     res.end();
      }
+     
+     
+     
+     function subwayChecker(res,flag){
+     
+         
+        sendingData="";
+
+        var request = require('request');
+        var cheerio = require('cheerio');
+        var iconv = require('iconv-lite');
+        var urlencode = require('urlencode');
+        var EncodedName;
+        
+        if(flag == 0){
+            EncodedName = urlencode("회기");
+            sendingData +="●회기역 지하철 정보!\n";
+        }
+        else{
+            EncodedName = urlencode("영통");
+            sendingData +="●영통역 지하철 정보!\n";
+        }
+            
+        var SearchStationNum = "http://swopenAPI.seoul.go.kr/api/subway/546876586477686938334655746c76/json/realtimeStationArrival/0/4/"+EncodedName;
+        try{
+            request({
+            url: SearchStationNum,
+            method: 'GET'
+            }, function(err, response, body) {
+                var totalInfo = JSON.parse(body);
+                var array2 = {"toStation": [], "predictTime": []};
+                
+                for( var i in totalInfo["realtimeArrivalList"]){
+        
+                        array2["toStation"][i] = totalInfo["realtimeArrivalList"][i]["trainLineNm"];
+                        array2["predictTime"][i] = totalInfo["realtimeArrivalList"][i]["arvlMsg2"];
+                        
+                        sendingData += "▶" + array2["toStation"][i] + "\n" + array2["predictTime"][i] + "\n\n" 
+                    }
+        
+    
+                if(flag == 0)
+                    sendButtonSeoul(res,imoticon.addImoticonSweat(sendingData));
+                else
+                    sendButtonGlobal(res,imoticon.addImoticonSweat(sendingData));
+        
+                   
+            });
+        
+        }
+        catch(exception){
+            sendingData +="ERROR!\n문제를 해결할 수 있게 문의에 넣어 주세요!\n";
+            if(flag == 0)
+                    sendButtonSeoul(res,imoticon.addImoticonSweat(sendingData));
+                else
+                    sendButtonGlobal(res,imoticon.addImoticonSweat(sendingData));
+        }
+         
+     }
+     
      
 
     function bookSearch(req,res){
@@ -757,7 +830,7 @@ module.exports = function(app)
                 }
                 else if(arr[3] == 3){
                     imgUrl = "http://smilelion-corelife.c9users.io/lotsofcloud"
-                    sendingData +="오늘은 많ㅡ은 구름이 예상 됩니다.\n";
+                    sendingData +="오늘은 많ㅡ은 구���이 예상 됩니다.\n";
                 }
                 else if(arr[3] == 4){
                     imgUrl = "http://smilelion-corelife.c9users.io/heurim"
@@ -775,7 +848,9 @@ module.exports = function(app)
     }    
     
     
-     function haksik(res,pos){
+    
+    
+     function globalHaksik(res){
      
          
         var today = new Date();
@@ -792,12 +867,7 @@ module.exports = function(app)
         
         var request = require('request');
         var urlencode = require('urlencode');
-        var baburl = "";
-        
-        if(pos == 0)    //설
-            baburl = "https://bds.bablabs.com/openapi/v1/campuses/YUfjRgpYTT/stores?date="+today;
-        else            //국
-            baburl = "https://bds.bablabs.com/openapi/v1/campuses/wNEmHgn0wx/stores?date="+today;
+        var baburl = "https://bds.bablabs.com/openapi/v1/campuses/wNEmHgn0wx/stores?date="+today;
         
         
         request({
@@ -838,28 +908,17 @@ module.exports = function(app)
             
             
             for(var k =0; k <totalInfo["stores"].length ; k ++){
-                if(pos == 1){
-                    if( k == 0)
-                        sendingData +="●제2 기숙사 ----------\n";
+                 if( k == 0)
+                        sendingData +="●제2 기숙사\n";
                     else if( k == 1)
-                        sendingData +="\n●우정원 ----------\n";  
+                        sendingData +="\n●우정원\n";  
                     else if( k == 2)
-                        sendingData +="\n●학생회관 ----------\n";
+                        sendingData +="\n●학생회관\n";
                     else if( k == 3)
-                        sendingData +="\n●공대 ----------\n";
+                        sendingData +="\n●공대\n";
                     else if( k == 4)
-                        sendingData +="\n●학생회관_교직원 ----------\n";
-                }
-                else{
-                    if( k == 0)
-                        sendingData +="●청운관 ----------\n";
-                    else if( k == 1)
-                        sendingData +="\n●푸른솔 ----------\n";  
-                    else if( k == 2)
-                        sendingData +="\n●청운관_교직원 ----------\n";
-                    else if( k == 3)
-                        sendingData +="\n●푸른솔_교직원 ----------\n";
-                }
+                        sendingData +="\n●학생회관_교직원\n";
+                
                 for( var i = 0 ; i<  totalInfo["stores"][k]["menus"].length ; i++){
                     sendingData += haksik[k]["description"][i]+" ▶"  + haksik[k]["time"][i]  + "\n\n";
                 }
@@ -867,14 +926,126 @@ module.exports = function(app)
                 
             }
             
-            if(pos == 0)    //설
-                sendButtonSeoul(res,imoticon.addImoticonSweat(sendingData));
-            else
-                sendButtonGlobal(res,imoticon.addImoticonDefault(sendingData));
-            
+            sendButtonGlobal(res,imoticon.addImoticonDefault(sendingData));
+
         });
      }
+     
+     function seolHaksik(res){
+         
+        var request = require('request');
+        var urlencode = require('urlencode');
+        var baburl = "";
+        var EncodedName ="";
+
+        EncodedName = urlencode("\'청운관1식당\'");
+        baburl = "http://coop.khu.ac.kr/wp-admin/admin-ajax.php?action=get_wdtable&table_id=2&wdt_var1="+EncodedName+"&wdt_var2=CURDATE%28%29&wdt_var3=weekday%28curdate%28%29%29";
+        sendingData +="●청운관1식당\n";  
     
+        request({
+        url: baburl,
+        method: 'GET'
+        }, function(err, response, body) {
+            
+            var totalInfo = JSON.parse(body);
+            var array2 = {"time": [], "description": []};
+            
+            for( var i in totalInfo["data"]){
+
+                array2["time"][i] = totalInfo["data"][i]["4"];
+                array2["description"][i] = totalInfo["data"][i]["6"];
+                
+            }
+                
+            for( var i = 0 ; i<  totalInfo["data"].length ; i++){
+                sendingData += array2["description"][i]+" ▶"  + array2["time"][i] + "\n\n";
+            }
+
+
+            EncodedName = urlencode("\'청운관2식당\'");
+            baburl = "http://coop.khu.ac.kr/wp-admin/admin-ajax.php?action=get_wdtable&table_id=2&wdt_var1="+EncodedName+"&wdt_var2=CURDATE%28%29&wdt_var3=weekday%28curdate%28%29%29";
+            sendingData +="\n●청운관2식당\n";  
+        
+            request({
+            url: baburl,
+            method: 'GET'
+            }, function(err, response, body) {
+                
+                var totalInfo = JSON.parse(body);
+                var array2 = {"time": [], "description": []};
+                
+                for( var i in totalInfo["data"]){
+    
+                    array2["time"][i] = totalInfo["data"][i]["4"];
+                    array2["description"][i] = totalInfo["data"][i]["6"];
+                    
+                }
+                
+                for( var i = 0 ; i<  totalInfo["data"].length ; i++){
+                    sendingData += array2["description"][i]+" ▶"  + array2["time"][i] + "\n\n";
+                }
+                
+                
+                EncodedName = urlencode("\'푸른솔1식당\'");
+                baburl = "http://coop.khu.ac.kr/wp-admin/admin-ajax.php?action=get_wdtable&table_id=2&wdt_var1="+EncodedName+"&wdt_var2=CURDATE%28%29&wdt_var3=weekday%28curdate%28%29%29";
+                sendingData +="\n●푸른솔1식당\n";  
+                
+                request({
+                url: baburl,
+                method: 'GET'
+                }, function(err, response, body) {
+                    
+                    var totalInfo = JSON.parse(body);
+                    var array2 = {"time": [], "description": []};
+                    
+                    for( var i in totalInfo["data"]){
+        
+                        array2["time"][i] = totalInfo["data"][i]["4"];
+                        array2["description"][i] = totalInfo["data"][i]["6"];
+                        
+                    }
+                    
+                    for( var i = 0 ; i<  totalInfo["data"].length ; i++){
+                        sendingData += array2["description"][i]+" ▶"  + array2["time"][i] + "\n\n";
+                    }
+                    
+                    EncodedName = urlencode("\'푸른솔2식당\'");
+                    baburl = "http://coop.khu.ac.kr/wp-admin/admin-ajax.php?action=get_wdtable&table_id=2&wdt_var1="+EncodedName+"&wdt_var2=CURDATE%28%29&wdt_var3=weekday%28curdate%28%29%29";
+                    sendingData +="\n●푸른솔2식당\n";  
+                    
+                    request({
+                    url: baburl,
+                    method: 'GET'
+                    }, function(err, response, body) {
+                        
+                        
+                        
+                        var totalInfo = JSON.parse(body);
+                        var array2 = {"time": [], "description": []};
+                        
+                        for( var i in totalInfo["data"]){
+            
+                            array2["time"][i] = totalInfo["data"][i]["4"];
+                            array2["description"][i] = totalInfo["data"][i]["6"];
+                            
+                        }
+                        
+                        for( var i = 0 ; i<  totalInfo["data"].length ; i++){
+                            sendingData += array2["description"][i]+" ▶"  + array2["time"][i] + "\n\n";
+                        }
+            
+                        sendButtonSeoul(res,imoticon.addImoticonDefault(sendingData));
+
+                    });
+        
+                    
+                });
+    
+                
+            });
+        });
+         
+     }
     
 }
 
