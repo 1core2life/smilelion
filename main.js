@@ -3,7 +3,8 @@ module.exports = function(app)
    
     
     var imoticon = require('./imoticon.js');
-
+    var userLog = new Array();
+    userLog.push("userKeyLog");
     
 	// 키보드
 	app.get('/keyboard', function(req, res){
@@ -27,7 +28,20 @@ module.exports = function(app)
 	
 	// 메시지
 	app.post('/message', function(req, res){
-	    console.log(req.body.user_key);
+	    
+	    var userKey  = req.body.user_key;
+	    
+	    console.log(userKey);
+	    
+	    for(var i =0; i< userLog.length ; i++){
+	        if(userLog[i] == userKey){
+	            break;
+	        }
+	        if(i == userLog.length -1){
+	            userLog.push(userKey);
+	        }
+	    }
+	    
     	var sendingData ="";
     	
        	
@@ -150,10 +164,12 @@ module.exports = function(app)
             sendButtonEtc(res,imoticon.addImoticonDefault(sendingData));
         }
         
+        //----------------------------------------- 유저 로그 보기 명령어
+        else if(req.body.content ==  "userLog"){
         
-        
-        
-        
+            sendingData +="유저 로그 명령어\n" + userLog.length ;
+            sendButtonEtc(res,imoticon.addImoticonDefault(sendingData));
+        }
         
         
         //기타 정보
@@ -443,8 +459,8 @@ module.exports = function(app)
         var iconv = new Iconv('euc-kr', 'utf-8//translit//ignore');
         
         var SearchStationNum = "http://m.seoul.go.kr/traffic/SubInfoNearDetail.do?subSearch=1&station=123&upage=12&flag=3&sflag=2";
-
-        sendingData +="●회기역 지하철 정보!\n";
+        var sub;
+        sendingData +="●회기역 지하철 정보!\n\n";
         
         try{
             request({
@@ -460,12 +476,16 @@ module.exports = function(app)
                 var array2 = [];
                 
                 $('#subArrInfo').each(function(index, ele){
-                    var sub = $(this).text().replace(/\s/gi, "").split(']'); 
+                    sub = $(this).text().replace(/\s/gi, "").split(']'); 
                     var sub2 = sub[1].split('[');
         
                     sendingData += "▶" + sub[0] + "]" + sub2[0] + "\n[" + sub2[1] + "]" + sub[2]+ "\n\n";
         
                 });
+                
+                if(sub == null){
+                    sendingData += "운행중인 지하철이 존재하지 않습니다.\n";
+                }
                 
                 sendButtonSeoul(res,imoticon.addImoticonSweat(sendingData));
             });
@@ -478,59 +498,41 @@ module.exports = function(app)
      
      
      function subwayCheckerGlobal(res){
-     
-         
         var sendingData="";
-
+    
         var request = require('request');
         var cheerio = require('cheerio');
-        var Iconv = require('iconv').Iconv;
-        var iconv = new Iconv('utf-8', 'utf-8//translit//ignore');
-
-        sendingData +="●영통역 지하철 정보!\n";
     
-            
-        var SearchStationNum = "http://swopenAPI.seoul.go.kr/api/subway/546876586477686938334655746c76/json/realtimeStationArrival/0/2/%ec%98%81%ed%86%b5";
-        try{
-            request({
-            url: SearchStationNum,
-            encoding : null,
-            headers : {
-                "Host":"swopenapi.seoul.go.kr",
-                "Accept-Language":"ko-KR,ko;q=0.8",
-                "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36"
-            },
-            method: 'GET'
-            }, function(err, response, body) {
-                var temp = body;
-                var totalInfo = JSON.parse(iconv.convert(body).toString());
-                
-                if(totalInfo["status"] == "500"){
-                    sendingData += "\n\n운행 정보가 없습니다! \n";
-                    sendButtonGlobal(res,imoticon.addImoticonSweat(sendingData));
+        var SearchStationNum = "http://bus.go.kr/getSubway_6.jsp?statnId=1075075240&subwayId=1075";
+        
+         sendingData +="●영통역 지하철 정보!\n\n";
+         
+        request({
+        url: SearchStationNum,
+        method: 'GET'
+        }, function(err, response, body) {
+             var $ = cheerio.load(body);
+    
+                try {
+                    $(".arvl2").each(function () {
+                        var st =  $(this).text().replace(/(\s*)/gi, "").split(':');
                         
-                    return;
+                        sendingData += "▶[청명방면]\n\n"+st[1]+"\n\n";
+                    });
+                    
+                     $(".arvl1").each(function () {
+                        var st =  $(this).text().replace(/(\s*)/gi, "").split(':');
+                        
+                        sendingData += "▶[망포방면]\n\n"+st[1]+"\n";
+                    });
+                }
+                catch(exception){
+                    sendingData +="ERROR!\n문제를 해결할 수 있게 문의에 넣어 주세요!\n";
                 }
                 
-                var array2 = {"toStation": [], "predictTime": []};
-                
-                for( var i in totalInfo["realtimeArrivalList"]){
-        
-                        array2["toStation"][i] = totalInfo["realtimeArrivalList"][i]["trainLineNm"];
-                        array2["predictTime"][i] = totalInfo["realtimeArrivalList"][i]["arvlMsg2"];
-                        
-                        sendingData += "▶" + array2["toStation"][i] + "\n" + array2["predictTime"][i] + "\n\n" 
-                    }
-        
-    
                 sendButtonGlobal(res,imoticon.addImoticonSweat(sendingData));
-            });
-        
-        }
-        catch(exception){
-            sendingData +="ERROR!\n문제를 해결할 수 있게 문의에 넣어 주세요!\n";
-            sendButtonGlobal(res,imoticon.addImoticonSweat(sendingData));
-        }
+               
+        });
          
      }
      
@@ -846,6 +848,12 @@ module.exports = function(app)
         method: 'GET'
         }, function (error, response, body) {
           var totalInfo = JSON.parse(body);
+          
+          if(totalInfo["response"]["body"] == undefined){
+              sendingData +="오류가 발생했습니다.\n잠시후 다시 시도해주시길 바랍니다.\n";
+              sendButtonDefault(res,imoticon.addImoticonCry(sendingData));
+              return ;
+          }
     
           rainProbability = totalInfo["response"]["body"]["items"]["item"][0]["fcstValue"];  //probability of rain
           rainForm = totalInfo["response"]["body"]["items"]["item"][1]["fcstValue"]; // no[0] , rain[1], rain/snow[2], snow [3]
@@ -1062,11 +1070,12 @@ module.exports = function(app)
                 var array2 = {"time": [], "description": []};
     
                 for( var i in totalInfo["data"]){
-                    if(totalInfo["data"][i]["5"].indexOf("<br") != -1)
-                        array2["description"][i] = totalInfo["data"][i]["5"].split('<')[0];
+                    if(totalInfo["data"][i]["6"].indexOf("<br") != -1)
+                        array2["description"][i] = totalInfo["data"][i]["6"].split('<')[0];
                     else
-                        array2["description"][i] = totalInfo["data"][i]["5"];
-                    array2["time"][i] = totalInfo["data"][i]["6"];
+                        array2["description"][i] = totalInfo["data"][i]["6"];
+                    array2["time"][i] = totalInfo["data"][i]["4"];
+                    
                     
                 }
                 

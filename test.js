@@ -47,39 +47,48 @@
         });
     	*/
     	
-  	/*
-    sendingData="";
+  	
+    var sendingData="";
 
     var request = require('request');
     var cheerio = require('cheerio');
-    var iconv = require('iconv-lite');
-    var urlencode = require('urlencode');
-    var EncodedName = urlencode("영통");
 
-    var SearchStationNum = "http://swopenAPI.seoul.go.kr/api/subway/546876586477686938334655746c76/json/realtimeStationArrival/0/2/"+EncodedName;
+    var SearchStationNum = "http://bus.go.kr/getSubway_6.jsp?statnId=1075075240&subwayId=1075";
+    
+     sendingData +="●영통역 지하철 정보!\n\n";
+     
     request({
     url: SearchStationNum,
     method: 'GET'
     }, function(err, response, body) {
-        var totalInfo = JSON.parse(body);
+         var $ = cheerio.load(body);
 
-        var array2 = {"toStation": [], "predictTime": []};
-        
-        for( var i in totalInfo["realtimeArrivalList"]){
-
-                array2["toStation"][i] = totalInfo["realtimeArrivalList"][i]["trainLineNm"];
-                array2["predictTime"][i] = totalInfo["realtimeArrivalList"][i]["arvlMsg2"];
+            try {
+                $(".arvl2").each(function () {
+                    var st =  $(this).text().replace(/(\s*)/gi, "").split(':');
+                    
+                    sendingData += "▶[청명방면]\n\n"+st[1]+"\n\n";
+                    
+                    
+                });
                 
-                sendingData += array2["toStation"][i] + "\n" + array2["predictTime"][i] + "\n\n" 
+                 $(".arvl1").each(function () {
+                    var st =  $(this).text().replace(/(\s*)/gi, "").split(':');
+                    
+                    sendingData += "▶[망포방면]\n\n"+st[1]+"\n";
+                    
+                
+    
+                   
+                });
             }
-
-        var renderingJson = JSON.stringify(array2);
-        console.log(renderingJson)
-        
-        
-
+            catch(exception){
+                sendingData +="ERROR!\n문제를 해결할 수 있게 문의에 넣어 주세요!\n";
+            }
+            
+            console.log(sendingData)
            
-    });*/
+    });
 
 /*
    
@@ -122,8 +131,8 @@ catch(ex){
     sendingData +="ERROR!\n문제를 해결할 수 있게 문의에 넣어 주세요!\n";
     //sendButtonSeoul(res,imoticon.addImoticonSweat(sendingData));
 }
-*/
-/*
+*//*
+
 var sendingData="";
 
         var d = new Date();
@@ -183,13 +192,13 @@ var sendingData="";
                 var totalInfo = JSON.parse(body);
 
                 var array2 = {"time": [], "description": []};
-    
+    console.log(totalInfo);
                 for( var i in totalInfo["data"]){
-                    if(totalInfo["data"][i]["5"].indexOf("<br") != -1)
-                        array2["description"][i] = totalInfo["data"][i]["5"].split('<')[0];
+                    if(totalInfo["data"][i]["6"].indexOf("<br") != -1)
+                        array2["description"][i] = totalInfo["data"][i]["6"].split('<')[0];
                     else
-                        array2["description"][i] = totalInfo["data"][i]["5"];
-                    array2["time"][i] = totalInfo["data"][i]["6"];
+                        array2["description"][i] = totalInfo["data"][i]["6"];
+                    array2["time"][i] = totalInfo["data"][i]["4"];
                     
                     
                 }
@@ -264,7 +273,6 @@ var sendingData="";
                         }
             
                         //sendButtonSeoul(res,imoticon.addImoticonDefault(sendingData));
-console.log(sendingData)
                     });
         
                     
@@ -273,56 +281,5 @@ console.log(sendingData)
                 
             });
         });
-         */
-     
-     var sendingData="";
-
-        var request = require('request');
-        var cheerio = require('cheerio');
-        var Iconv = require('iconv').Iconv;
-        var iconv = new Iconv('utf-8', 'utf-8//translit//ignore');
-
-        sendingData +="●영통역 지하철 정보!\n";
-    
-            
-        var SearchStationNum = "http://swopenAPI.seoul.go.kr/api/subway/546876586477686938334655746c76/json/realtimeStationArrival/0/2/%ec%98%81%ed%86%b5";
-        try{
-            request({
-            url: SearchStationNum,
-            encoding : null,
-            headers : {
-                "Host":"swopenapi.seoul.go.kr",
-                "Accept-Language":"ko-KR,ko;q=0.8",
-                "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36"
-            },
-            method: 'GET'
-            }, function(err, response, body) {
-                var temp = body
-                var totalInfo = JSON.parse(iconv.convert(body).toString());
-                
-                if(totalInfo["status"] == "500"){
-                    sendingData += "\n\n운행 정보가 없습니다! \n";
-                    //sendButtonGlobal(res,imoticon.addImoticonSweat(sendingData));
-                        
-                    return;
-                }
-                
-                var array2 = {"toStation": [], "predictTime": []};
-                
-                for( var i in totalInfo["realtimeArrivalList"]){
-        
-                        array2["toStation"][i] = totalInfo["realtimeArrivalList"][i]["trainLineNm"];
-                        array2["predictTime"][i] = totalInfo["realtimeArrivalList"][i]["arvlMsg2"];
-                        
-                        sendingData += "▶" + array2["toStation"][i] + "\n" + array2["predictTime"][i] + "\n\n" 
-                    }
-        console.log(sendingData)
-    
-                //sendButtonGlobal(res,imoticon.addImoticonSweat(sendingData));
-            });
-        
-        }
-        catch(exception){
-            sendingData +="ERROR!\n문제를 해결할 수 있게 문의에 넣어 주세요!\n";
-            //endButtonGlobal(res,imoticon.addImoticonSweat(sendingData));
-        }
+         
+     */
