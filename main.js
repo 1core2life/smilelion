@@ -86,10 +86,10 @@ module.exports = function(app)
         }
         else if(req.body.content ==  "지하철 확인(국)"){
         
-            //sendingData +="지하철 API 서버 문제 때문에, 계속 웃는사자가 죽어버립니다..ㅠㅠ\n우선 이 기능은 닫아두고 화요일까지 고쳐서 업뎃하겠습니다\n 이용해주셔서 감사합니다!\n" ;
+            sendingData +="지하철 API 서버 문제 때문가 생겨 수정 중 입니다 죄송합니다 ㅠㅠ\n 15~19일 업데이트 예정\n" ;
             
-            //sendButtonGlobal(res,imoticon.addImoticonCry(sendingData));
-            subwayCheckerGlobal(res);
+            sendButtonGlobal(res,imoticon.addImoticonCry(sendingData));
+            //subwayCheckerGlobal(res);
         }
         
         else if(req.body.content ==  "버스 확인(설)"){
@@ -120,11 +120,14 @@ module.exports = function(app)
         }
         
         else if(req.body.content ==  "날씨(설)"){
-            
+            //sendingData +="현재 오류로 잠시 기능을 제한하겠습니다!\n 15~19일 업데이트 예정\n" ;
+            //sendButtonSeoul(res,imoticon.addImoticonCry(sendingData));
             todayWeather(res,0);
         }
         
         else if(req.body.content ==  "날씨(국)"){
+            //sendingData +="현재 오류로 잠시 기능을 제한하겠습니다!\n 15~19일 업데이트 예정\n" ;
+            //sendButtonGlobal(res,imoticon.addImoticonCry(sendingData));
             
             todayWeather(res,1);
         }
@@ -949,7 +952,7 @@ module.exports = function(app)
         request({
         url: baburl,
         headers: {
-          'accesstoken': "!"
+          'accesstoken': "--"
         },
         method: 'GET'
         }, function(err, response, body) {
