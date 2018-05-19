@@ -68,7 +68,7 @@ module.exports = function(app)
         
         else if(req.body.content ==  "문의 하기"){
         
-            sendingData +="영리활동을 하지 않습니다.\n이런 기능이 필요하다! 혹은 불편하다! 하시면 메일 주세요.\n" ;
+            sendingData +="더 나은 편의성을 위해 노력하겠습니다 :>\n\n" ;
             sendingData +="< 문의 메일 > whitezonen1@khu.ac.kr\n" ;
             sendingData +="경희대 컴공과 재학생 제작 \n" ;
             
@@ -86,10 +86,10 @@ module.exports = function(app)
         }
         else if(req.body.content ==  "지하철 확인(국)"){
         
-            sendingData +="지하철 API 서버 문제 때문가 생겨 수정 중 입니다 죄송합니다 ㅠㅠ\n 15~19일 업데이트 예정\n" ;
+            //sendingData +="지하철 API 서버 문제 때문가 생겨 수정 중 입니다 죄송합니다 ㅠㅠ\n 15~19일 업데이트 예정\n" ;
             
-            sendButtonGlobal(res,imoticon.addImoticonCry(sendingData));
-            //subwayCheckerGlobal(res);
+            //sendButtonGlobal(res,imoticon.addImoticonCry(sendingData));
+            subwayCheckerGlobal(res);
         }
         
         else if(req.body.content ==  "버스 확인(설)"){
@@ -152,12 +152,12 @@ module.exports = function(app)
         
         else if(req.body.content ==  "맛집 추천(설)"){        //------------------------------------------------------------------------해야대
         
-           sendingData ="아직 개발 및 데이터 모으는 중 ..\n거 기다려 주십쇼!\n미안하게 됐수다\n" ;
+           sendingData ="1학기 종강 후 개발! \n 기대중!\n" ;
             sendButtonSeoul(res,imoticon.addImoticonSmile(sendingData));
         }
         else if(req.body.content ==  "맛집 추천(국)"){        //------------------------------------------------------------------------해야대
         
-            sendingData ="아직 개발 및 데이터 모으는 중 ..\n거 기다려 주십쇼!\n미안하게 됐수다\n" ;
+            sendingData ="1학기 종강 후 개발! \n 기대중!\n" ;
             sendButtonGlobal(res,imoticon.addImoticonSmile(sendingData));
         }
         
@@ -495,47 +495,66 @@ module.exports = function(app)
         }
         catch(ex){
             sendingData +="ERROR!\n문제를 해결할 수 있게 문의에 넣어 주세요!\n";
-            //sendButtonSeoul(res,imoticon.addImoticonSweat(sendingData));
+            sendButtonSeoul(res,imoticon.addImoticonSweat(sendingData));
         }
      }
      
      
      function subwayCheckerGlobal(res){
-        var sendingData="";
-    
-        var request = require('request');
-        var cheerio = require('cheerio');
-    
-        var SearchStationNum = "http://bus.go.kr/getSubway_6.jsp?statnId=1075075240&subwayId=1075";
-        
-         sendingData +="●영통역 지하철 정보!\n\n";
-         
-        request({
-        url: SearchStationNum,
-        method: 'GET'
-        }, function(err, response, body) {
-             var $ = cheerio.load(body);
-    
-                try {
-                    $(".arvl2").each(function () {
-                        var st =  $(this).text().replace(/(\s*)/gi, "").split(':');
-                        
-                        sendingData += "▶[청명방면]\n\n"+st[1]+"\n\n";
-                    });
+       
+          
+         var sendingData="";
+ 
+         var request = require('request');
+         var cheerio = require('cheerio');
+         var Iconv = require('iconv').Iconv;
+         var iconv = new Iconv('utf-8', 'utf-8//translit//ignore');
+ 
+         sendingData +="●영통역 지하철 정보!\n";
+     
+             
+         var SearchStationNum = "http://swopenAPI.seoul.go.kr/api/subway/546876586477686938334655746c76/json/realtimeStationArrival/0/2/%ec%98%81%ed%86%b5";
+          try{
+              request({
+              url: SearchStationNum,
+             encoding : null,
+             headers : {
+                 "Host":"swopenapi.seoul.go.kr",
+                 "Accept-Language":"ko-KR,ko;q=0.8",
+                 "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36"
+             },
+              method: 'GET'
+              }, function(err, response, body) {
+                 var temp = body;
+                 var totalInfo = JSON.parse(iconv.convert(body).toString());
+                  
+                  if(totalInfo["status"] == "500"){
+                     sendingData += "\n\n운행 정보가 없습니다! \n역무원도 주무실 시간 입니다!\n\n";
                     
-                     $(".arvl1").each(function () {
-                        var st =  $(this).text().replace(/(\s*)/gi, "").split(':');
-                        
-                        sendingData += "▶[망포방면]\n\n"+st[1]+"\n";
-                    });
-                }
-                catch(exception){
-                    sendingData +="ERROR!\n문제를 해결할 수 있게 문의에 넣어 주세요!\n";
-                }
-                
+                          
+                      return;
+                  }
+                var array2 = {"toStation": [], "predictTime": []};
+                 
+                for( var i in totalInfo["realtimeArrivalList"]){
+     
+                     array2["toStation"][i] = totalInfo["realtimeArrivalList"][i]["trainLineNm"];
+                     array2["predictTime"][i] = totalInfo["realtimeArrivalList"][i]["arvlMsg2"];
+                     
+                     sendingData += "▶" + array2["toStation"][i] + "\n" + array2["predictTime"][i] + "\n\n" 
+                 }
+                 
                 sendButtonGlobal(res,imoticon.addImoticonSweat(sendingData));
-               
-        });
+        
+              });
+          
+          }
+          catch(exception){
+              sendingData +="ERROR!\n문제를 해결할 수 있게 문의에 넣어 주세요!\n";
+                sendButtonGlobal(res,imoticon.addImoticonSweat(sendingData));
+          }
+           
+       
          
      }
      
