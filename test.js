@@ -1,54 +1,78 @@
-
-          
-         var sendingData="";
- 
-         var request = require('request');
-         var cheerio = require('cheerio');
-         var Iconv = require('iconv').Iconv;
-         var iconv = new Iconv('utf-8', 'utf-8//translit//ignore');
- 
-         sendingData +="●영통역 지하철 정보!\n";
-     
-             
-         var SearchStationNum = "http://swopenAPI.seoul.go.kr/api/subway/546876586477686938334655746c76/json/realtimeStationArrival/0/2/%ec%98%81%ed%86%b5";
-          try{
-              request({
-              url: SearchStationNum,
-             encoding : null,
-             headers : {
-                 "Host":"swopenapi.seoul.go.kr",
-                 "Accept-Language":"ko-KR,ko;q=0.8",
-                 "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36"
-             },
-              method: 'GET'
-              }, function(err, response, body) {
-                 var temp = body;
-                 var totalInfo = JSON.parse(iconv.convert(body).toString());
-                  
-                  if(totalInfo["status"] == "500"){
-                     sendingData += "\n\n운행 정보가 없습니다! \n역무원도 주무실 시간 입니다!\n\n";
-                    
-                          
-                      return;
-                  }
-                var array2 = {"toStation": [], "predictTime": []};
-                 
-                for( var i in totalInfo["realtimeArrivalList"]){
-     
-                     array2["toStation"][i] = totalInfo["realtimeArrivalList"][i]["trainLineNm"];
-                     array2["predictTime"][i] = totalInfo["realtimeArrivalList"][i]["arvlMsg2"];
-                     
-                     sendingData += "▶" + array2["toStation"][i] + "\n" + array2["predictTime"][i] + "\n\n" 
-                 }
-                 
-                sendButtonGlobal(res,imoticon.addImoticonSweat(sendingData));
+        var sendingData="";
+         
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth()+1; //January is 0!
+        var yyyy = today.getFullYear();
+        if(dd<10) {
+            dd='0'+dd
+        } 
+        if(mm<10) {
+            mm='0'+mm
+        } 
+        today = yyyy+'-' + mm+'-'+dd;
         
-              });
-          
-          }
-          catch(exception){
-              sendingData +="ERROR!\n문제를 해결할 수 있게 문의에 넣어 주세요!\n";
-                sendButtonGlobal(res,imoticon.addImoticonSweat(sendingData));
-          }
+        var request = require('request');
+        var urlencode = require('urlencode');
+        var baburl = "https://bds.bablabs.com/openapi/v1/campuses/YUfjRgpYTT/stores?date="+today;
+        
+        
+        request({
+        url: baburl,
+        headers: {
+          'accesstoken': "hISRMLnIyfUjg8UZv4GGxq8R7iV4rze6gQnOA1UyLcX8DgWTwY"
+        },
+        method: 'GET'
+        }, function(err, response, body) {
+            
+            var totalInfo = JSON.parse(body);
+        
+            
+            var haksik = Array(totalInfo["stores"].length);
+            
+            for(var m = 0; m< totalInfo["stores"].length; m++)
+                haksik[m] = {"description": [], "time": []};
            
-       
+
+            for(var k =0; k < totalInfo["stores"].length ; k ++)
+                for( var i = 0 ; i<  totalInfo["stores"][k]["menus"].length ; i++){
+            
+                    haksik[k]["description"][i] = totalInfo["stores"][k]["menus"][i]["description"];
+                    haksik[k]["time"][i] = totalInfo["stores"][k]["menus"][i]["time"];
+                    
+                    if(haksik[k]["time"][i] == 0)
+                        haksik[k]["time"][i] = "아침"
+                    else if(haksik[k]["time"][i] == 1)
+                        haksik[k]["time"][i] = "점심"
+                    else if(haksik[k]["time"][i] == 2)
+                        haksik[k]["time"][i] = "저녁"
+                    else if(haksik[k]["time"][i] == 3)
+                        haksik[k]["time"][i] = "종일"
+                    else
+                        haksik[k]["time"][i] = "기타"
+                }
+            
+            
+            
+            for(var k =0; k <totalInfo["stores"].length ; k ++){
+                 if( k == 0)
+                        sendingData +="●청운관 1식당\n\n";
+                else if( k == 1)
+                    sendingData +="\n●푸른솔 1식당\n\n";  
+                else if( k == 2)
+                    sendingData +="\n●청운관 2식당\n\n";
+                else if( k == 3)
+                    sendingData +="\n●푸른솔 2식당\n\n";
+                
+                if( totalInfo["stores"][k]["menus"].length == 0)
+                    sendingData +="\n오늘은 식단이 없는 것 같습니다..ㅠㅠ\n\n";
+                
+                for( var i = 0 ; i<  totalInfo["stores"][k]["menus"].length ; i++){
+                    sendingData += haksik[k]["description"][i]+" ▶"  + haksik[k]["time"][i]  + "\n\n";
+                }
+            
+                
+            }
+            sendButtonGlobal(res,imoticon.addImoticonDefault(sendingData));
+
+        });

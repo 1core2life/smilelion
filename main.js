@@ -1036,146 +1036,81 @@ module.exports = function(app)
          
         var sendingData="";
          
-        var d = new Date();
-        var today = d.getDay()-1;
-        if(today >=5){
-            sendingData += "주말은 식단이 없습니다!\n\n";
-            sendButtonSeoul(res,imoticon.addImoticonDefault(sendingData));
-            return;
-        }
-         
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth()+1; //January is 0!
+        var yyyy = today.getFullYear();
+        if(dd<10) {
+            dd='0'+dd
+        } 
+        if(mm<10) {
+            mm='0'+mm
+        } 
+        today = yyyy+'-' + mm+'-'+dd;
+        
         var request = require('request');
         var urlencode = require('urlencode');
-        var baburl = "";
-        var EncodedName ="";
-
-        EncodedName = urlencode("\'청운관1식당\'");
-        baburl = "http://coop.khu.ac.kr/wp-admin/admin-ajax.php?action=get_wdtable&table_id=3&wdt_var1=weekday%28curdate%28%29%29&wdt_var2="+today+"&wdt_var3="+EncodedName;
+        var baburl = "https://bds.bablabs.com/openapi/v1/campuses/YUfjRgpYTT/stores?date="+today;
         
-        sendingData +="●청운관1식당\n\n";  
-    
+        
         request({
         url: baburl,
+        headers: {
+          'accesstoken': "--"
+        },
         method: 'GET'
         }, function(err, response, body) {
+            
             var totalInfo = JSON.parse(body);
-            var array2 = {"time": [], "description": []};
-
-            for( var i in totalInfo["data"]){
-                if(totalInfo["data"][i]["5"].indexOf("\\n") != -1)
-                    array2["description"][i] = totalInfo["data"][i]["5"].split('\\')[0];
-                else
-                    array2["description"][i] = totalInfo["data"][i]["5"];
-                array2["time"][i] = totalInfo["data"][i]["6"];
-                
-                
-            }
-            
-            if(totalInfo["data"].length == 0)
-                sendingData +="\n오늘은 식단이 없는 것 같습니다..ㅠㅠ\n\n";
-                
-            for( var i = 0 ; i<  totalInfo["data"].length ; i++){
-                sendingData += array2["description"][i]+" ▶"  + array2["time"][i] + "\n\n";
-                    
-            }
-
-            EncodedName = urlencode("\'청운관2식당\'");
-            baburl = "http://coop.khu.ac.kr/wp-admin/admin-ajax.php?action=get_wdtable&table_id=2&wdt_var1="+EncodedName+"&wdt_var2=CURDATE%28%29&wdt_var3=weekday%28curdate%28%29%29";
-            sendingData +="\n●청운관2식당\n\n";  
         
-            request({
-            url: baburl,
-            method: 'GET'
-            }, function(err, response, body) {
-                var totalInfo = JSON.parse(body);
+            
+            var haksik = Array(totalInfo["stores"].length);
+            
+            for(var m = 0; m< totalInfo["stores"].length; m++)
+                haksik[m] = {"description": [], "time": []};
+           
 
-                var array2 = {"time": [], "description": []};
-    
-                for( var i in totalInfo["data"]){
-                    if(totalInfo["data"][i]["6"].indexOf("<br") != -1)
-                        array2["description"][i] = totalInfo["data"][i]["6"].split('<')[0];
+            for(var k =0; k < totalInfo["stores"].length ; k ++)
+                for( var i = 0 ; i<  totalInfo["stores"][k]["menus"].length ; i++){
+            
+                    haksik[k]["description"][i] = totalInfo["stores"][k]["menus"][i]["description"];
+                    haksik[k]["time"][i] = totalInfo["stores"][k]["menus"][i]["time"];
+                    
+                    if(haksik[k]["time"][i] == 0)
+                        haksik[k]["time"][i] = "아침"
+                    else if(haksik[k]["time"][i] == 1)
+                        haksik[k]["time"][i] = "점심"
+                    else if(haksik[k]["time"][i] == 2)
+                        haksik[k]["time"][i] = "저녁"
+                    else if(haksik[k]["time"][i] == 3)
+                        haksik[k]["time"][i] = "종일"
                     else
-                        array2["description"][i] = totalInfo["data"][i]["6"];
-                    array2["time"][i] = totalInfo["data"][i]["4"];
-                    
-                    
+                        haksik[k]["time"][i] = "기타"
                 }
+            
+            
+            
+            for(var k =0; k <totalInfo["stores"].length ; k ++){
+                 if( k == 0)
+                        sendingData +="●청운관 1식당\n\n";
+                else if( k == 1)
+                    sendingData +="\n●푸른솔 1식당\n\n";  
+                else if( k == 2)
+                    sendingData +="\n●청운관 2식당\n\n";
+                else if( k == 3)
+                    sendingData +="\n●푸른솔 2식당\n\n";
                 
-                if(totalInfo["data"].length == 0)
+                if( totalInfo["stores"][k]["menus"].length == 0)
                     sendingData +="\n오늘은 식단이 없는 것 같습니다..ㅠㅠ\n\n";
-                    
-                for( var i = 0 ; i<  totalInfo["data"].length ; i++){
-                    sendingData += array2["description"][i]+" ▶"  + array2["time"][i] + "\n\n";
+                
+                for( var i = 0 ; i<  totalInfo["stores"][k]["menus"].length ; i++){
+                    sendingData += haksik[k]["description"][i]+" ▶"  + haksik[k]["time"][i]  + "\n\n";
                 }
-                
-                EncodedName = urlencode("\'푸른솔1식당\'");
-                baburl = "http://coop.khu.ac.kr/wp-admin/admin-ajax.php?action=get_wdtable&table_id=2&wdt_var1="+EncodedName+"&wdt_var2=CURDATE%28%29&wdt_var3=weekday%28curdate%28%29%29";
-                sendingData +="\n●푸른솔1식당\n\n";  
-
-                request({
-                url: baburl,
-                method: 'GET'
-                }, function(err, response, body) {
-                    var totalInfo = JSON.parse(body);
-                    var array2 = {"time": [], "description": []};
-        
-                    for( var i in totalInfo["data"]){
-                        if(totalInfo["data"][i]["6"].indexOf("<br") != -1)
-                            array2["description"][i] = totalInfo["data"][i]["6"].split('<')[0];
-                        else
-                            array2["description"][i] = totalInfo["data"][i]["6"];
-                        array2["time"][i] = totalInfo["data"][i]["4"];
-                        
-                        
-                    }
-                    
-                    if(totalInfo["data"].length == 0)
-                        sendingData +="\n오늘은 식단이 없는 것 같습니다..ㅠㅠ\n\n";
-                        
-                    for( var i = 0 ; i<  totalInfo["data"].length ; i++){
-                        sendingData += array2["description"][i]+" ▶"  + array2["time"][i] + "\n\n";
-                            
-                    }
-                    
-                    EncodedName = urlencode("\'푸른솔2식당\'");
-                    baburl = "http://coop.khu.ac.kr/wp-admin/admin-ajax.php?action=get_wdtable&table_id=2&wdt_var1="+EncodedName+"&wdt_var2=CURDATE%28%29&wdt_var3=weekday%28curdate%28%29%29";
-                    sendingData +="\n●푸른솔2식당\n\n";  
-                    
-                    request({
-                    url: baburl,
-                    method: 'GET'
-                    }, function(err, response, body) {
-                        
-                        var totalInfo = JSON.parse(body);
-
-                        var array2 = {"time": [], "description": []};
             
-                        for( var i in totalInfo["data"]){
-                            if(totalInfo["data"][i]["6"].indexOf("<br") != -1)
-                                array2["description"][i] = totalInfo["data"][i]["6"].split('<')[0];
-                            else
-                                array2["description"][i] = totalInfo["data"][i]["6"];
-                            array2["time"][i] = totalInfo["data"][i]["4"];
-                            
-                            
-                        }
-                        
-                        if(totalInfo["data"].length == 0)
-                            sendingData +="\n오늘은 식단이 없는 것 같습니다..ㅠㅠ\n\n";
-                            
-                        for( var i = 0 ; i<  totalInfo["data"].length ; i++){
-                            sendingData += array2["description"][i]+" ▶"  + array2["time"][i] + "\n\n";
-                                
-                        }
-            
-                        sendButtonSeoul(res,imoticon.addImoticonDefault(sendingData));
-                    });
-        
-                    
-                });
-    
                 
-            });
+            }
+            sendButtonGlobal(res,imoticon.addImoticonDefault(sendingData));
+
         });
          
      }
